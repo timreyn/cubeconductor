@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>App Settings</title>
+</head>
+<body>
+  <h2>App Settings</h2>
+  <form method="POST">
+    <h3>Session Secret Key</h3>
+    <p>
+      <input type="text"
+             name="PROP_session_secret_key"
+             value="{{ settings.session_secret_key or '' }}">
+      <div>(Required) This should be an arbitrary (random) string.  It's used to configure login cookies.  Changing this will log out every user, so don't change this once set unless you have a good reason.</div>
+    </p>
+    <h3>WCA OAuth</h3>
+    <p>
+      <div>
+        WCA OAuth Client ID:
+        <input type="text"
+               name="PROP_wca_oauth_client_id"
+               value="{{ settings.wca_oauth_client_id or '' }}">
+      </div>
+      <div>
+        WCA OAuth Client Secret:
+        <input type="text"
+               name="PROP_wca_oauth_client_secret"
+               value="{{ settings.wca_oauth_client_secret or '' }}">
+      </div>
+    </p>
+    <p>
+      (Required) The default for dev apps is an <a href="https://staging.worldcubeassociation.org/oauth/applications/1" target="_blank">application</a> on the WCA staging website.  If you create an application on the prod WCA website, you can use that as an example.
+    </p>
+    <h3>WCA Website URL</h3>
+    <p>
+      <input type="text"
+             name="PROP_wca_website"
+             value="{{ settings.wca_website or '' }}">
+    </p>
+    <button type="submit">Submit</button>
+  </form>
+</body>
