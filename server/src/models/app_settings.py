@@ -5,7 +5,7 @@ class AppSettings(ndb.Model):
   wca_oauth_client_id = ndb.StringProperty(default='example-application-id')
   wca_oauth_client_secret = ndb.StringProperty(default='example-secret')
 
-  wca_website = ndb.StringProperty(default='https://staging.worldcubeassociation.org/')
+  wca_website = ndb.StringProperty(default='https://staging.worldcubeassociation.org')
 
   @staticmethod
   def Get():
