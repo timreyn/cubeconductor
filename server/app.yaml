@@ -20,3 +20,6 @@ handlers:
    script: admin.app
    secure: always
    login: admin
+ - url: /.*
+   script: conductor.app
+   secure: always

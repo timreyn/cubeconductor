@@ -1,9 +1,8 @@
-import webapp2
-
+from src.handlers.base import BaseHandler
 from src.jinja import JINJA_ENVIRONMENT
 from src.models.app_settings import AppSettings
 
-class AppSettingsHandler(webapp2.RequestHandler):
+class AppSettingsHandler(BaseHandler):
   def get(self):
     template = JINJA_ENVIRONMENT.get_template('admin/app_settings.html')
     self.response.write(template.render({
