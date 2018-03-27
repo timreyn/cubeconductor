@@ -28,7 +28,8 @@ class User(ndb.Model):
         delattr(self, 'avatar_' + prop)
 
   def ToDict(self):
-    out = {'avatar': {}}
+    out = {'id': self.key.id(),
+           'avatar': {}}
     # Don't expose email, as this may be surfaced to other people.
     for prop in ['wca_id', 'name', 'delegate_status']:
       prop_val = getattr(self, prop, '')
