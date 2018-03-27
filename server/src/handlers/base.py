@@ -19,6 +19,10 @@ class BaseHandler(webapp2.RequestHandler):
         del self.session['wca_account_number']
         del self.session['login_time']
 
+    if self.LoginRequired() and not self.user:
+      self.response.set_status(401)
+      return
+
     try:
       webapp2.RequestHandler.dispatch(self)
     finally:
@@ -34,3 +38,6 @@ class BaseHandler(webapp2.RequestHandler):
   def session(self):
     # Returns a session using the default cookie key.
     return self.session_store.get_session()
+
+  def LoginRequired(self):
+    return False

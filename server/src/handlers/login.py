@@ -32,19 +32,7 @@ class LoginHandler(OAuthBaseHandler):
     self.session['login_time'] = (
         datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds()
     user = User.get_by_id(wca_info['id']) or User(id=wca_info['id'])
-
-    for prop in ['wca_id', 'name', 'email', 'delegate_status']:
-      prop_val = wca_info.get(prop)
-      if prop_val:
-        setattr(user, prop, prop_val)
-      else:
-        delattr(user, prop)
-
-    avatar_url = wca_info.get('avatar', {}).get('thumb_url')
-    if avatar_url:
-      user.avatar_url = avatar_url
-    else:
-      del user.avatar_url
+    user.FromDict(wca_info)
 
     user.last_login = datetime.datetime.now()
     user.put()
