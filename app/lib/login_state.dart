@@ -1,35 +1,42 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'models/user.dart';
+import 'prefs.dart';
+
 class LoginState {
-  LoginState({SharedPreferences this.preferences});
+  LoginState({this.sharedPreferences});
 
   bool isLoggedIn() {
-    try {
-      getCookie();
-      return true;
-    } catch (e) {
-      return false;
-    }
+    return getCookie() != null;
   }
 
-  String getCookie() {
-    return preferences.getString(_COOKIE_PREFERENCE);
+  List<String> getCookie() {
+    return getStringListPreference(sharedPreferences, Prefs.cookie);
   }
 
-  void setCookie(String cookie) {
-    preferences.setString(_COOKIE_PREFERENCE, cookie);
-    preferences.setInt(
-        _LAST_LOGIN_PREFERENCE,
+  void setCookie(List<String> cookie) {
+    setStringListPreference(sharedPreferences, Prefs.cookie, cookie);
+    setIntPreference(
+        sharedPreferences, Prefs.lastLoginTime,
         new DateTime.now().millisecondsSinceEpoch);
   }
 
-  void logOut() {
-    preferences.remove(_COOKIE_PREFERENCE);
-    preferences.remove(_LAST_LOGIN_PREFERENCE);
+  User getUser() {
+    Map userDict = json.decode(
+        getPreference(sharedPreferences, Prefs.userInfo));
+    return User(userDict);
   }
 
-  final String _COOKIE_PREFERENCE = "PREF_COOKIE";
-  final String _LAST_LOGIN_PREFERENCE = "PREF_LAST_LOGIN";
+  void setLoginInfo(String loginInfo) {
+    setStringPreference(sharedPreferences, Prefs.userInfo, loginInfo);
+  }
 
-  SharedPreferences preferences;
+  void logOut() {
+    removePreference(sharedPreferences, Prefs.cookie);
+    removePreference(sharedPreferences, Prefs.lastLoginTime);
+    removePreference(sharedPreferences, Prefs.userInfo);
+  }
+
+  SharedPreferences sharedPreferences;
 }

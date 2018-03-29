@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'app_bar.dart';
+import 'login_flow.dart';
 
 void main() => runApp(new CubeConductorApp());
 
@@ -10,15 +13,16 @@ class CubeConductorApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new HomeWidget(title: 'Cube Conductor'),
+      routes: {
+        "/": (_) => new HomeWidget(),
+        "/login": (_) => new LoginFlowWidget(),
+      },
     );
   }
 }
 
 class HomeWidget extends StatefulWidget {
-  HomeWidget({Key key, this.title}) : super(key: key);
-
-  final String title;
+  HomeWidget({Key key}) : super(key: key);
 
   @override
   _HomeState createState() => new _HomeState();
@@ -26,14 +30,22 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeState extends State<HomeWidget> {
   @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((SharedPreferences prefs) {
+      setState(() {this.sharedPreferences = prefs;});
+    });
+  }
+
+  SharedPreferences sharedPreferences;
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
+      appBar: conductorAppBar(context, sharedPreferences),
       body: new Center(
         child: new Text(
-          'Welcome to Cube Conductor!',
+          'Welcome to Cube Conductor!!!',
         ),
       ),
     );
