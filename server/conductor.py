@@ -17,6 +17,7 @@ app = webapp2.WSGIApplication([
   webapp2.Route('/logout', handler=LogoutHandler, name='logout'),
   webapp2.Route('/my_competitions', handler=MyCompetitionsHandler, name='my_competitions'),
   webapp2.Route('/oauth_callback', handler=OAuthCallbackHandler),
-  webapp2.Route('/competition/<competition_id:.*>/update', handler=UpdateCompetitionHandler),
+  webapp2.Route('/competition/<competition_id:.*>/update', handler=UpdateCompetitionHandler,
+                name='competition_update'),
   webapp2.Route('/api/v0/me', handler=MeHandler),
 ], config=config.GetAppConfig())

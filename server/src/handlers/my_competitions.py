@@ -35,14 +35,17 @@ class MyCompetitionsHandler(OAuthBaseHandler):
             (datetime.datetime.now() - datetime.timedelta(days=30)).isoformat())
     response_json = json.loads(response)
 
-    managed_competitions = []
-    for competition_dict in response_json:
-      competition = Competition(id=competition_dict['id'])
-      competition.FromCompetitionSearch(competition_dict)
-      managed_competitions.append(competition)
-
     my_registrations = Registration.query(Registration.user == self.user.key).fetch()
     my_competitions = ndb.get_multi([reg.competition for reg in my_registrations])
+    my_competitions_by_id = {competition.key.id() : competition
+                             for competition in my_competitions}
+
+    managed_competitions = []
+    for competition_dict in response_json:
+      competition = (my_competitions_by_id[competition_dict['id']] or
+                     Competition(id=competition_dict['id']))
+      competition.FromCompetitionSearch(competition_dict)
+      managed_competitions.append(competition)
 
     self.response.write(template.render({
         'c': common.Common(self),

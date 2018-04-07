@@ -24,6 +24,20 @@
               {% endautoescape %}
             </span>
           </div>
+          <div class="collapsible-body">
+            {% if competition.enabled %}
+              <a href="{{ c.uri_for('competition_update',
+                                    competition_id=competition.key.id()) }}">
+                Update Competition Info
+              </a>
+            {% else %}
+              This competition isn't set up for Cube Conductor yet.
+              <a href="{{ c.uri_for('competition_update',
+                                    competition_id=competition.key.id()) }}">
+                Set up now!
+              </a>
+            {% endif %}
+          </div>
         </li>
       {% endfor %}
     </ul>
@@ -55,5 +69,8 @@
   {% endif %}
   <script type="application/javascript">
     window.history.pushState("", "", "{{ c.uri_for('my_competitions') }}");
+    $(document).ready(function(){
+      $('.collapsible').collapsible();
+    });
   </script>
 {% endblock %}

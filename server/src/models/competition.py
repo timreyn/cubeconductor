@@ -13,8 +13,15 @@ def StripWcif(competition_dict):
       r.pop('scrambleSetCount', None)
       r.pop('scrambleSets', None)
 
+  def status(person):
+    if 'registration' not in person:
+      return 'n/a'
+    if not person['registration']:
+      return 'n/a'
+    return person['registration'].get('status', 'n/a')
+
   competition_dict['persons'] = filter(
-      lambda person: person['registration']['status'] == 'accepted',
+      lambda person: status(person) in ('accepted', 'n/a'),
       competition_dict['persons'])
   for person in competition_dict['persons']:
     person.pop('gender', None)
@@ -24,7 +31,7 @@ def StripWcif(competition_dict):
       best.pop('worldRanking', None)
       best.pop('continentalRanking', None)
       best.pop('nationalRanking', None)
-    registration = person['registration']
+    registration = person['registration'] or {}
     registration.pop('status', None)
     registration.pop('guests', None)
     registration.pop('comments', None)
@@ -40,6 +47,8 @@ class Competition(ndb.Model):
   end_date = ndb.DateProperty()
 
   competition_wcif = ndb.TextProperty()
+
+  enabled = ndb.BooleanProperty()
 
   def FromCompetitionSearch(self, competition_dict):
     self.name = competition_dict['name']
@@ -65,6 +74,7 @@ class Competition(ndb.Model):
 
     StripWcif(competition_dict)
     self.competition_wcif = json.dumps(competition_dict)
+    self.enabled = True
 
   def FormatDates(self):
     if self.start_date == self.end_date:
