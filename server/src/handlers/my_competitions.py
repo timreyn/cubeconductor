@@ -3,8 +3,11 @@ import json
 import urllib
 import webapp2
 
+from google.appengine.ext import ndb
+
 from src import common
 from src.models.competition import Competition
+from src.models.registration import Registration
 from src.handlers.oauth import OAuthBaseHandler
 from src.jinja import JINJA_ENVIRONMENT
 
@@ -38,8 +41,12 @@ class MyCompetitionsHandler(OAuthBaseHandler):
       competition.FromCompetitionSearch(competition_dict)
       managed_competitions.append(competition)
 
+    my_registrations = Registration.query(Registration.user == self.user.key).fetch()
+    my_competitions = ndb.get_multi([reg.competition for reg in my_registrations])
+
     self.response.write(template.render({
         'c': common.Common(self),
         'managed_competitions': managed_competitions,
+        'my_competitions': my_competitions,
     }))
     return
