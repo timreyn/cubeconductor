@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+  <h3 class="center orange-text">
+    My Competitions
+  </h3>
+  {% if managed_competitions %}
+    <h5>
+      Competitions I Can Manage
+    </h5>
+    <ul class="collapsible">
+      {% for competition in managed_competitions %}
+        <li>
+          <div class="collapsible-header">
+            <i class="material-icons">event</i>
+            {{ competition.name }}
+            <span class="text-lighten-2 badge">
+              {% autoescape false %}
+                {{ competition.FormatDates() }}
+              {% endautoescape %}
+            </span>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif not c.user %}
+    <h5 class="header col s12 light">
+      Please <a href="{{ c.uri_for('login') }}">log in</a> to see your competitions!
+    </h5>
+  {% else %}
+    <h5 class="header col s12 light">
+      No competitions found.  Only competitions using the Cube Conductor app will appear here.
+    </h5>
+  {% endif %}
+  <script type="application/javascript">
+    window.history.pushState("", "", "{{ c.uri_for('my_competitions') }}");
+  </script>
+{% endblock %}

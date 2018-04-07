@@ -18,6 +18,7 @@
       <ul class="right hide-on-med-and-down">
         {% if c.user %}
           <li>Welcome, {{ c.user.name }}
+          <li><a href="{{ c.uri_for('my_competitions') }}">My Competitions</a>
           <li><a href="{{ c.uri_for('logout') }}">Log Out</a>
         {% else %}
           <li><a href="{{ c.uri_for('login') }}">Log In</a>

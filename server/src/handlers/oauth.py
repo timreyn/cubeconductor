@@ -42,8 +42,8 @@ class OAuthCallbackHandler(BaseHandler):
                   self.request.query_string)
 
 class OAuthBaseHandler(BaseHandler):
-  # Subclasses should first call OAuthBaseHandler.GetFromCode(self), then check
-  # if self.auth_token is None.  If so, they must return early.
+  # Subclasses should first call OAuthBaseHandler.GetTokenFromCode(self), then
+  # check if self.auth_token is None.  If so, they must return early.
   def GetTokenFromCode(self):
     self.auth_token = None
     code = self.request.get('code')
