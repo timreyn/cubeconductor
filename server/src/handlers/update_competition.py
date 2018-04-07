@@ -46,7 +46,7 @@ class UpdateCompetitionHandler(OAuthBaseHandler):
     for competitor_id, competitor_dict in new_competitors.iteritems():
       competitor = (old_competitors.pop(competitor_id, None) or
                     Registration(id=Registration.Id(competition_id, competitor_id)))
-      competitor.competiiton = competition.key
+      competitor.competition = competition.key
       competitor.user = ndb.Key(User, competitor_id)
       competitor.name = competitor_dict['name']
       competitor.is_admin = (competitor_dict.get('delegatesCompetition', False) or

@@ -61,7 +61,7 @@ class Competition(ndb.Model):
                           competition_dict['schedule']['startDate'],
                           '%Y-%m-%d').date()
     self.end_date = (self.start_date +
-                     datetime.timedelta(days=competition_dict['schedule']['numberOfDays']))
+                     datetime.timedelta(days=competition_dict['schedule']['numberOfDays'] - 1))
 
     StripWcif(competition_dict)
     self.competition_wcif = json.dumps(competition_dict)
