@@ -3,7 +3,6 @@ import datetime
 from google.appengine.ext import ndb
 
 class Competition(ndb.Model):
-  competition_id = ndb.StringProperty()
   name = ndb.StringProperty()
   short_name = ndb.StringProperty()
 
@@ -14,7 +13,6 @@ class Competition(ndb.Model):
   end_date = ndb.DateProperty()
 
   def FromDict(self, competition_dict):
-    self.competition_id = competition_dict['id']
     self.name = competition_dict['name']
     self.short_name = competition_dict['short_name']
 

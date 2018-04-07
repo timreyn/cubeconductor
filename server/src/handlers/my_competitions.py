@@ -35,7 +35,7 @@ class MyCompetitionsHandler(OAuthBaseHandler):
 
     managed_competitions = []
     for competition_dict in response_json:
-      competition = Competition(id=competition_dict['url'])
+      competition = Competition(id=competition_dict['id'])
       competition.FromDict(competition_dict)
       managed_competitions.append(competition)
 
