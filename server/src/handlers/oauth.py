@@ -25,11 +25,10 @@ class AuthenticateHandler(BaseHandler):
         'redirect_uri': redirect_uri,
         'state': json.dumps({
             'handler_data': self.request.get('handler_data'),
-            'scope': self.request.get('scope'),
             'oauth_redirect_uri': redirect_uri,
             'actual_redirect_uri': self.request.get('callback'),
         }),
-        'scope': self.request.get('scope'),
+        'scope': 'public email manage_competitions',
     }
 
     oauth_url = app_settings.wca_website + '/oauth/authorize?' + urllib.urlencode(params)
@@ -53,7 +52,6 @@ class OAuthBaseHandler(BaseHandler):
 
     state = json.loads(self.request.get('state'))
     self.handler_data = state['handler_data']
-    scope = state['scope']
     app_settings = AppSettings.Get()
 
     # Get OAuth token.

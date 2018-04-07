@@ -19,7 +19,6 @@ class MyCompetitionsHandler(OAuthBaseHandler):
 
     if not self.request.get('code'):
       self.redirect('/authenticate?' + urllib.urlencode({
-          'scope': 'public email manage_competitions',
           'callback': webapp2.uri_for('my_competitions', _full=True),
       }))
       return

@@ -11,7 +11,6 @@ class LoginHandler(OAuthBaseHandler):
     if not self.request.get('code'):
       redirect_url = self.request.get('target') or self.request.referer or '/'
       self.redirect('/authenticate?' + urllib.urlencode({
-          'scope': 'public email',
           'callback': self.request.path,
           'handler_data': redirect_url,
       }))
