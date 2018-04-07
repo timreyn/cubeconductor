@@ -38,21 +38,26 @@ class UpdateCompetitionHandler(OAuthBaseHandler):
     competition.FromWcifDict(response_json)
     competition.put()
 
-    new_competitor_ids = set(person['wcaUserId'] for person in response_json['persons'])
-    old_competitor_ids = set(registration.user.id() for registration in
-                             Registration.query(Registration.competition == competition.key).iter())
+    new_competitors = {person['wcaUserId'] : person for person in response_json['persons']}
+    old_competitors = {registration.user.id() : registration for registration in
+                       Registration.query(Registration.competition == competition.key).iter()}
 
     to_put = []
-    for competitor_id in new_competitor_ids - old_competitor_ids:
-      competitor = Registration(id=Registration.Id(competition_id, competitor_id))
+    for competitor_id, competitor_dict in new_competitors.iteritems():
+      competitor = (old_competitors.pop(competitor_id, None) or
+                    Registration(id=Registration.Id(competition_id, competitor_id)))
       competitor.competiiton = competition.key
       competitor.user = ndb.Key(User, competitor_id)
+      competitor.name = competitor_dict['name']
+      competitor.is_admin = (competitor_dict.get('delegatesCompetition', False) or
+                             competitor_dict.get('organizesCompetition', False) or
+                             'delegate' in competitor_dict['registration'].get('roles', []) or
+                             'organizer' in competitor_dict['registration'].get('roles', []))
       to_put.append(competitor)
     ndb.put_multi(to_put)
 
-    competitors_to_delete = old_competitor_ids - new_competitor_ids
     ndb.delete_multi([ndb.Key(Registration, Registration.Id(competition_id, competitor_id))
-                      for competitor_id in old_competitor_ids - new_competitor_ids])
+                      for competitor_id in old_competitors.iterkeys()])
 
     self.redirect_to('my_competitions')
     return
