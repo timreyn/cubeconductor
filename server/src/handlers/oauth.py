@@ -109,6 +109,7 @@ class OAuthBaseHandler(BaseHandler):
     # OAuth token obtained, now read information using the person's token.
     headers = {'Authorization': 'Bearer ' + self.auth_token}
     url = AppSettings.Get().wca_website + path
+    urlfetch.set_default_fetch_deadline(30)
     result = urlfetch.fetch(url=url, headers=headers)
     return result.content
 

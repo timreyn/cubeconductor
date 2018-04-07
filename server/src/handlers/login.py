@@ -21,12 +21,8 @@ class LoginHandler(OAuthBaseHandler):
       return
 
     response = self.GetWcaApi('/api/v0/me')
-    if response.status != 200:
-      self.response.set_status(response.status)
-      logging.error('Error from WCA: ' + self.response.read())
-      return
 
-    wca_info = json.loads(response.read())['me']
+    wca_info = json.loads(response)['me']
     self.session['wca_account_number'] = wca_info['id']
     self.session['login_time'] = (
         datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds()
