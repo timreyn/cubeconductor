@@ -4,6 +4,8 @@ import logging
 import urllib
 import webapp2
 
+from google.appengine.api import urlfetch
+
 from src.handlers.base import BaseHandler
 from src.models.app_settings import AppSettings
 from src.models.refresh_token import RefreshToken
@@ -106,11 +108,9 @@ class OAuthBaseHandler(BaseHandler):
       path = '/' + path
     # OAuth token obtained, now read information using the person's token.
     headers = {'Authorization': 'Bearer ' + self.auth_token}
-    conn = httplib.HTTPSConnection(strip(AppSettings.Get().wca_website) + path)
-    conn.request('GET', '', '', headers)
-    response = conn.getresponse()
-    return response
-
+    url = AppSettings.Get().wca_website + path
+    result = urlfetch.fetch(url=url, headers=headers)
+    return result.content
 
 class LogoutHandler(BaseHandler):
   def get(self):

@@ -8,6 +8,7 @@ from src.handlers.login import LogoutHandler
 from src.handlers.my_competitions import MyCompetitionsHandler
 from src.handlers.oauth import AuthenticateHandler
 from src.handlers.oauth import OAuthCallbackHandler
+from src.handlers.update_competition import UpdateCompetitionHandler
 
 app = webapp2.WSGIApplication([
   webapp2.Route('/', handler=BasicHandler('index.html')),
@@ -16,5 +17,6 @@ app = webapp2.WSGIApplication([
   webapp2.Route('/logout', handler=LogoutHandler, name='logout'),
   webapp2.Route('/my_competitions', handler=MyCompetitionsHandler, name='my_competitions'),
   webapp2.Route('/oauth_callback', handler=OAuthCallbackHandler),
+  webapp2.Route('/competition/<competition_id:.*>/update', handler=UpdateCompetitionHandler),
   webapp2.Route('/api/v0/me', handler=MeHandler),
 ], config=config.GetAppConfig())

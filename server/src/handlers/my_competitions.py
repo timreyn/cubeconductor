@@ -30,12 +30,12 @@ class MyCompetitionsHandler(OAuthBaseHandler):
     response = self.GetWcaApi(
         '/api/v0/competitions?managed_by_me=true&start=%s' %
             (datetime.datetime.now() - datetime.timedelta(days=30)).isoformat())
-    response_json = json.loads(response.read())
+    response_json = json.loads(response)
 
     managed_competitions = []
     for competition_dict in response_json:
       competition = Competition(id=competition_dict['id'])
-      competition.FromDict(competition_dict)
+      competition.FromCompetitionSearch(competition_dict)
       managed_competitions.append(competition)
 
     self.response.write(template.render({

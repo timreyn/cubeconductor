@@ -1,6 +1,33 @@
 import datetime
+import json
 
 from google.appengine.ext import ndb
+
+# Drop fields we don't care to save.
+def StripWcif(competition_dict):
+  for event in competition_dict['events']:
+    event.pop('competitorLimit', None)
+    event.pop('qualification', None)
+    for r in event['rounds']:
+      r.pop('results', None)
+      r.pop('scrambleSetCount', None)
+      r.pop('scrambleSets', None)
+
+  competition_dict['persons'] = filter(
+      lambda person: person['registration']['status'] == 'accepted',
+      competition_dict['persons'])
+  for person in competition_dict['persons']:
+    person.pop('gender', None)
+    person.pop('birthdate', None)
+    person.pop('email', None)
+    for best in person.get('personalBests', []):
+      best.pop('worldRanking', None)
+      best.pop('continentalRanking', None)
+      best.pop('nationalRanking', None)
+    registration = person['registration']
+    registration.pop('status', None)
+    registration.pop('guests', None)
+    registration.pop('comments', None)
 
 class Competition(ndb.Model):
   name = ndb.StringProperty()
@@ -12,7 +39,9 @@ class Competition(ndb.Model):
   start_date = ndb.DateProperty()
   end_date = ndb.DateProperty()
 
-  def FromDict(self, competition_dict):
+  competition_wcif = ndb.TextProperty()
+
+  def FromCompetitionSearch(self, competition_dict):
     self.name = competition_dict['name']
     self.short_name = competition_dict['short_name']
 
@@ -23,6 +52,19 @@ class Competition(ndb.Model):
                                                  '%Y-%m-%d').date()
     self.end_date = datetime.datetime.strptime(competition_dict['end_date'],
                                                '%Y-%m-%d').date()
+
+  def FromWcifDict(self, competition_dict):
+    self.name = competition_dict['name']
+    self.short_name = competition_dict['shortName']
+
+    self.start_date = datetime.datetime.strptime(
+                          competition_dict['schedule']['startDate'],
+                          '%Y-%m-%d').date()
+    self.end_date = (self.start_date +
+                     datetime.timedelta(days=competition_dict['schedule']['numberOfDays']))
+
+    StripWcif(competition_dict)
+    self.competition_wcif = json.dumps(competition_dict)
 
   def FormatDates(self):
     if self.start_date == self.end_date:
