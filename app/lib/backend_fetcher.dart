@@ -8,7 +8,7 @@ import 'prefs.dart';
 import 'shared_state.dart';
 
 class BackendFetcher {
-  BackendFetcher({this.sharedState});
+  BackendFetcher(this.sharedState);
 
   Future<String> get(String path, [Map<String, String> queryParameters]) async {
     SharedPreferences sharedPreferences = sharedState.sharedPreferences;

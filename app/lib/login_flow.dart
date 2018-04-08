@@ -76,7 +76,7 @@ class LoginFlowState extends State<LoginFlowWidget> {
       loginState.setCookie(cookie.split(";"));
 
       BackendFetcher fetcher =
-      new BackendFetcher(sharedState: sharedState);
+      new BackendFetcher(sharedState);
       loginState.setLoginInfo(await fetcher.get("/api/v0/me"));
 
       //webviewPlugin.dispose();
