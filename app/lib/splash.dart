@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'shared_state.dart';
 
 class SplashWidget extends StatelessWidget {
@@ -9,7 +10,7 @@ class SplashWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     sharedState.awaitReady().then((_) =>
-      Navigator.pushReplacementNamed(context, "/home"));
+        Navigator.pushReplacementNamed(context, "/home"));
     return new Scaffold(
       body: new Center(
         child: new Text(

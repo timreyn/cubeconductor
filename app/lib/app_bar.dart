@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'models/user.dart';
 import 'login_state.dart';
+import 'models/user.dart';
 import 'shared_state.dart';
 
 class _MenuOption {
@@ -22,11 +22,11 @@ List<_MenuOption> _menuOptions(SharedState sharedState) {
       onClick: (BuildContext context) {},
     ));
     options.add(new _MenuOption(
-      text: "Log out, " + user.name,
-      onClick: (BuildContext context) {
-        loginState.logOut();
-        Navigator.pushReplacementNamed(context, "/");
-      }
+        text: "Log out, " + user.name,
+        onClick: (BuildContext context) {
+          loginState.logOut();
+          Navigator.pushReplacementNamed(context, "/");
+        }
     ));
   } else {
     options.add(new _MenuOption(

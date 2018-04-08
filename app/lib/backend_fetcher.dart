@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'prefs.dart';
@@ -14,8 +15,8 @@ class BackendFetcher {
 
     HttpClient httpClient = new HttpClient();
     Uri uri = new Uri.https(
-      getPreference(sharedPreferences, Prefs.serverUrl),
-      path, queryParameters);
+        getPreference(sharedPreferences, Prefs.serverUrl),
+        path, queryParameters);
     HttpClientRequest request = await httpClient.getUrl(uri);
     try {
       getPreference(sharedPreferences, Prefs.cookie).forEach((String segment) {

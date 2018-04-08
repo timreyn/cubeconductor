@@ -16,6 +16,7 @@ class SharedState {
       sharedPreferencesMutex.release();
     });
   }
+
   Future<void> awaitReady() async {
     await sharedPreferencesMutex.acquireRead();
     sharedPreferencesMutex.release();
