@@ -76,6 +76,15 @@ class Competition(ndb.Model):
     self.competition_wcif = json.dumps(competition_dict)
     self.enabled = True
 
+  def ToDict(self):
+    return {
+        'id': self.key.id(),
+        'name': self.name,
+        'shortName': self.short_name,
+        'startDate': self.start_date.strftime('%Y-%m-%d'),
+        'endDate': self.start_date.strftime('%Y-%m-%d'),
+    }
+
   def FormatDates(self):
     if self.start_date == self.end_date:
       return self.start_date.strftime('%B %-d, %Y')

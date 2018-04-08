@@ -3,6 +3,7 @@ import webapp2
 from src import config
 from src.handlers.api.v0.competition_wcif import CompetitionWcifHandler
 from src.handlers.api.v0.me import MeHandler
+from src.handlers.api.v0.my_competitions import MyCompetitionsApiHandler
 from src.handlers.basic import BasicHandler
 from src.handlers.login import LoginHandler
 from src.handlers.login import LogoutHandler
@@ -22,4 +23,5 @@ app = webapp2.WSGIApplication([
                 name='competition_update'),
   webapp2.Route('/api/v0/competition/<competition_id:.*>/wcif', handler=CompetitionWcifHandler),
   webapp2.Route('/api/v0/me', handler=MeHandler),
+  webapp2.Route('/api/v0/my_competitions', handler=MyCompetitionsApiHandler),
 ], config=config.GetAppConfig())
