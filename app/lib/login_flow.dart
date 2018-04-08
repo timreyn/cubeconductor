@@ -1,39 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:semaphore/semaphore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_bar.dart';
 import 'backend_fetcher.dart';
 import 'login_state.dart';
 import 'prefs.dart';
+import 'shared_state.dart';
 
 class LoginFlowWidget extends StatefulWidget {
+  LoginFlowWidget(this.sharedState, {Key key}) : super(key: key);
+
+  final SharedState sharedState;
+
   @override
-  State createState() => new LoginFlowState();
+  State createState() => new LoginFlowState(sharedState);
 }
 
 class LoginFlowState extends State<LoginFlowWidget> {
-  @override
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance().then((SharedPreferences prefs) {
-      setState(() {
-        this.sharedPreferences = prefs;
-      });
-    });
-  }
+  LoginFlowState(this.sharedState);
 
-  SharedPreferences sharedPreferences;
+  SharedState sharedState;
 
   @override
   Widget build(BuildContext context) {
-    if (sharedPreferences == null) {
-      return new Scaffold(
-        appBar: conductorAppBar(context, sharedPreferences),
-      );
-    }
-    String host = getPreference(sharedPreferences, Prefs.serverUrl);
+    String host = getPreference(sharedState.sharedPreferences, Prefs.serverUrl);
     String url = new Uri(
       scheme: 'https',
       host: host,
@@ -49,7 +40,7 @@ class LoginFlowState extends State<LoginFlowWidget> {
 
     WebviewScaffold webview = new WebviewScaffold(
       url: url,
-      appBar: conductorAppBar(context, sharedPreferences),
+      appBar: conductorAppBar(context, sharedState),
     );
     FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
     webviewPlugin.onUrlChanged.listen((String url) async {
@@ -71,8 +62,7 @@ class LoginFlowState extends State<LoginFlowWidget> {
         semaphore.release();
       }
 
-      LoginState loginState = new LoginState(
-          sharedPreferences: sharedPreferences);
+      LoginState loginState = sharedState.loginState;
       if (loginState.isLoggedIn()) {
         return;
       }
@@ -86,7 +76,7 @@ class LoginFlowState extends State<LoginFlowWidget> {
       loginState.setCookie(cookie.split(";"));
 
       BackendFetcher fetcher =
-      new BackendFetcher(sharedPreferences: sharedPreferences);
+      new BackendFetcher(sharedState: sharedState);
       loginState.setLoginInfo(await fetcher.get("/api/v0/me"));
 
       //webviewPlugin.dispose();

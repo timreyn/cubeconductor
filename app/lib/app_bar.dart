@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/user.dart';
 import 'login_state.dart';
+import 'shared_state.dart';
 
 class _MenuOption {
   _MenuOption({this.text, this.onClick});
@@ -11,14 +11,10 @@ class _MenuOption {
   Function onClick;
 }
 
-List<_MenuOption> _menuOptions(SharedPreferences sharedPreferences) {
+List<_MenuOption> _menuOptions(SharedState sharedState) {
   List<_MenuOption> options = new List();
 
-  if (sharedPreferences == null) {
-    return options;
-  }
-
-  LoginState loginState = new LoginState(sharedPreferences: sharedPreferences);
+  LoginState loginState = sharedState.loginState;
   if (loginState.isLoggedIn()) {
     User user = loginState.getUser();
     options.add(new _MenuOption(
@@ -45,7 +41,7 @@ List<_MenuOption> _menuOptions(SharedPreferences sharedPreferences) {
 }
 
 AppBar conductorAppBar(BuildContext context,
-    SharedPreferences sharedPreferences) {
+    SharedState sharedState) {
   return new AppBar(
     title: new Text('Cube Conductor'),
     actions: <Widget>[
@@ -54,7 +50,7 @@ AppBar conductorAppBar(BuildContext context,
             option.onClick(context);
           },
           itemBuilder: (BuildContext context) {
-            return _menuOptions(sharedPreferences).map((_MenuOption option) {
+            return _menuOptions(sharedState).map((_MenuOption option) {
               return new PopupMenuItem<_MenuOption>(
                 value: option,
                 child: new Text(option.text),

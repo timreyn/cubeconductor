@@ -4,11 +4,14 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'prefs.dart';
+import 'shared_state.dart';
 
 class BackendFetcher {
-  BackendFetcher({this.sharedPreferences});
+  BackendFetcher({this.sharedState});
 
   Future<String> get(String path, [Map<String, String> queryParameters]) async {
+    SharedPreferences sharedPreferences = sharedState.sharedPreferences;
+
     HttpClient httpClient = new HttpClient();
     Uri uri = new Uri.https(
       getPreference(sharedPreferences, Prefs.serverUrl),
@@ -27,5 +30,5 @@ class BackendFetcher {
     return response.transform(utf8.decoder).join();
   }
 
-  final SharedPreferences sharedPreferences;
+  final SharedState sharedState;
 }
