@@ -1,6 +1,7 @@
 import webapp2
 
 from src import config
+from src.handlers.api.v0.competition_wcif import CompetitionWcifHandler
 from src.handlers.api.v0.me import MeHandler
 from src.handlers.basic import BasicHandler
 from src.handlers.login import LoginHandler
@@ -19,5 +20,6 @@ app = webapp2.WSGIApplication([
   webapp2.Route('/oauth_callback', handler=OAuthCallbackHandler),
   webapp2.Route('/competition/<competition_id:.*>/update', handler=UpdateCompetitionHandler,
                 name='competition_update'),
+  webapp2.Route('/api/v0/competition/<competition_id:.*>/wcif', handler=CompetitionWcifHandler),
   webapp2.Route('/api/v0/me', handler=MeHandler),
 ], config=config.GetAppConfig())
