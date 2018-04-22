@@ -9,7 +9,7 @@ class LoginState {
   LoginState({this.sharedPreferences});
 
   bool isLoggedIn() {
-    return getCookie() != null;
+    return getCookie() != null && getUser() != null;
   }
 
   List<String> getCookie() {
@@ -24,9 +24,11 @@ class LoginState {
   }
 
   User getUser() {
-    Map userDict = json.decode(
-        getPreference(sharedPreferences, Prefs.userInfo));
-    return User(userDict);
+    String userInfo = getPreference(sharedPreferences, Prefs.userInfo);
+    if (userInfo == null) {
+      return null;
+    }
+    return User(json.decode(userInfo));
   }
 
   void setLoginInfo(String loginInfo) {
