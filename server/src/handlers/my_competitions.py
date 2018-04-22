@@ -42,7 +42,7 @@ class MyCompetitionsHandler(OAuthBaseHandler):
 
     managed_competitions = []
     for competition_dict in response_json:
-      competition = (my_competitions_by_id[competition_dict['id']] or
+      competition = (my_competitions_by_id.get(competition_dict['id'], None) or
                      Competition(id=competition_dict['id']))
       competition.FromCompetitionSearch(competition_dict)
       managed_competitions.append(competition)
