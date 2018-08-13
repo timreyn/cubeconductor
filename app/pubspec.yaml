@@ -10,6 +10,7 @@ dependencies:
   flutter_webview_plugin: ^0.1.4
   semaphore: ^0.0.1
   mutex: ^0.0.1
+  intl: ^0.15.6
 
 dev_dependencies:
   flutter_test:

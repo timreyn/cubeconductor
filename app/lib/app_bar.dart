@@ -18,14 +18,16 @@ List<_MenuOption> _menuOptions(SharedState sharedState) {
   if (loginState.isLoggedIn()) {
     User user = loginState.getUser();
     options.add(new _MenuOption(
-      text: "Hi, " + user.name,
-      onClick: (BuildContext context) {},
-    ));
-    options.add(new _MenuOption(
         text: "Log out, " + user.name,
         onClick: (BuildContext context) {
           loginState.logOut();
           Navigator.pushReplacementNamed(context, "/");
+        }
+    ));
+    options.add(new _MenuOption(
+        text: "Upcoming Competitions",
+        onClick: (BuildContext context) {
+          Navigator.pushReplacementNamed(context, "/upcoming");
         }
     ));
   } else {

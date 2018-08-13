@@ -80,7 +80,7 @@ class LoginFlowState extends State<LoginFlowWidget> {
       loginState.setLoginInfo(await fetcher.get("/api/v0/me"));
 
       //webviewPlugin.dispose();
-      Navigator.pop(context, 1);
+      Navigator.pushReplacementNamed(context, "/upcoming");
     });
 
     return webview;

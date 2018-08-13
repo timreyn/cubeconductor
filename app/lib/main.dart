@@ -4,6 +4,7 @@ import 'app_bar.dart';
 import 'login_flow.dart';
 import 'shared_state.dart';
 import 'splash.dart';
+import 'upcoming_competitions.dart';
 
 void main() => runApp(new CubeConductorApp());
 
@@ -21,6 +22,7 @@ class CubeConductorApp extends StatelessWidget {
         "/": (_) => new SplashWidget(sharedState),
         "/home": (_) => new HomeWidget(sharedState),
         "/login": (_) => new LoginFlowWidget(sharedState),
+        "/upcoming": (_) => new UpcomingCompetitionsWidget(sharedState),
       },
     );
   }
