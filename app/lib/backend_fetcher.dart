@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'prefs.dart';
-import 'shared_state.dart';
+import 'state/shared_state.dart';
 
 class BackendFetcher {
   BackendFetcher(this.sharedState);

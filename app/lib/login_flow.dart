@@ -4,9 +4,9 @@ import 'package:semaphore/semaphore.dart';
 
 import 'app_bar.dart';
 import 'backend_fetcher.dart';
-import 'login_state.dart';
 import 'prefs.dart';
-import 'shared_state.dart';
+import 'state/login_state.dart';
+import 'state/shared_state.dart';
 
 class LoginFlowWidget extends StatefulWidget {
   LoginFlowWidget(this.sharedState, {Key key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'login_state.dart';
 import 'models/user.dart';
-import 'shared_state.dart';
+import 'state/login_state.dart';
+import 'state/shared_state.dart';
 
 class _MenuOption {
   _MenuOption({this.text, this.onClick});

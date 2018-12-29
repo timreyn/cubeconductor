@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
-import 'backend_fetcher.dart';
+import '../backend_fetcher.dart';
 import 'shared_state.dart';
-import 'models/competition.dart';
+import '../models/competition.dart';
 
 class CompetitionState {
   CompetitionState(this._sharedState) :

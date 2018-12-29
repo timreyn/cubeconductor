@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'app_bar.dart';
-import 'competition_state.dart';
-import 'shared_state.dart';
+import 'package:app/state/competition_state.dart';
+import 'package:app/state/shared_state.dart';
 
 class UpcomingCompetitionsWidget extends StatefulWidget {
   UpcomingCompetitionsWidget(this._sharedState, {Key key}) : super(key: key);
@@ -37,7 +37,7 @@ class _UpcomingCompetitionsState extends State<UpcomingCompetitionsWidget> {
         appBar: conductorAppBar(context, _sharedState),
         body: new ListView(
           shrinkWrap: true,
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(10.0),
           children: competitionRows(),
         ));
   }
