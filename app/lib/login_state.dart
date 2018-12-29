@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models/user.dart';
@@ -36,6 +37,8 @@ class LoginState {
   }
 
   void logOut() {
+    FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
+    webviewPlugin.cleanCookies();
     removePreference(sharedPreferences, Prefs.cookie);
     removePreference(sharedPreferences, Prefs.lastLoginTime);
     removePreference(sharedPreferences, Prefs.userInfo);
