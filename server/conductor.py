@@ -16,6 +16,7 @@ app = webapp2.WSGIApplication([
   webapp2.Route('/', handler=BasicHandler('index.html')),
   webapp2.Route('/authenticate', handler=AuthenticateHandler),
   webapp2.Route('/login', handler=LoginHandler, name='login'),
+  webapp2.Route('/login_flow_complete', handler=BasicHandler('login_flow_complete.html')),
   webapp2.Route('/logout', handler=LogoutHandler, name='logout'),
   webapp2.Route('/my_competitions', handler=MyCompetitionsHandler, name='my_competitions'),
   webapp2.Route('/oauth_callback', handler=OAuthCallbackHandler),
