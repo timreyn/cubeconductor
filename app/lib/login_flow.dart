@@ -18,9 +18,15 @@ class LoginFlowWidget extends StatefulWidget {
 }
 
 class LoginFlowState extends State<LoginFlowWidget> {
-  LoginFlowState(this.sharedState);
+  LoginFlowState(this.sharedState) {
+    this._hasCompletedLoginFlow = false;
+    _semaphore = new LocalSemaphore(1);
+  }
 
   SharedState sharedState;
+
+  bool _hasCompletedLoginFlow;
+  LocalSemaphore _semaphore;
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +40,6 @@ class LoginFlowState extends State<LoginFlowWidget> {
       },
     ).toString();
 
-    // Only allow one update to the login state.
-    var semaphore = new LocalSemaphore(1);
-    bool hasCompletedLoginFlow = false;
-
     WebviewScaffold webview = new WebviewScaffold(
       url: url,
       appBar: conductorAppBar(context, sharedState),
@@ -49,17 +51,17 @@ class LoginFlowState extends State<LoginFlowWidget> {
         return;
       }
 
-      // This code can only be passed once per call to build().  We get multiple
-      // onUrlChanged events, but we don't want all of them to cause us to
-      // update the login state.
+      // This code can only be passed once.  We get multiple onUrlChanged
+      // events, but we don't want all of them to cause us to update the login
+      // state.
       try {
-        await semaphore.acquire();
-        if (hasCompletedLoginFlow) {
+        await _semaphore.acquire();
+        if (_hasCompletedLoginFlow) {
           return;
         }
-        hasCompletedLoginFlow = true;
+        _hasCompletedLoginFlow = true;
       } finally {
-        semaphore.release();
+        _semaphore.release();
       }
 
       LoginState loginState = sharedState.loginState;
@@ -78,9 +80,9 @@ class LoginFlowState extends State<LoginFlowWidget> {
       BackendFetcher fetcher =
       new BackendFetcher(sharedState);
       loginState.setLoginInfo(await fetcher.get("/api/v0/me"));
-
-      //webviewPlugin.dispose();
-      Navigator.pushReplacementNamed(context, "/upcoming");
+      sharedState.competitionState.updateMyCompetitionsData().then((_) {
+        Navigator.pushReplacementNamed(context, "/upcoming");
+      });
     });
 
     return webview;
