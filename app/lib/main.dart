@@ -45,7 +45,7 @@ class _HomeState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: conductorAppBar(context, _sharedState),
+      appBar: conductorAppBar(context, _sharedState, "Cube Conductor"),
       body: new Center(
         child: new Text(
           'Welcome to Cube Conductor!!!',

@@ -27,7 +27,7 @@ class _UpcomingCompetitionsState extends State<UpcomingCompetitionsWidget> {
     }
 
     return new Scaffold(
-        appBar: conductorAppBar(context, _sharedState),
+        appBar: conductorAppBar(context, _sharedState, "Upcoming Competitions"),
         body: new ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.all(8.0),

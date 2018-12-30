@@ -43,9 +43,10 @@ List<_MenuOption> _menuOptions(SharedState sharedState) {
 }
 
 AppBar conductorAppBar(BuildContext context,
-    SharedState sharedState) {
+    SharedState sharedState,
+    String title) {
   return new AppBar(
-    title: new Text('Cube Conductor'),
+    title: new Text(title),
     actions: <Widget>[
       new PopupMenuButton<_MenuOption>(
           onSelected: (_MenuOption option) {

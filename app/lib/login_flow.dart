@@ -42,7 +42,7 @@ class LoginFlowState extends State<LoginFlowWidget> {
 
     WebviewScaffold webview = new WebviewScaffold(
       url: url,
-      appBar: conductorAppBar(context, sharedState),
+      appBar: conductorAppBar(context, sharedState, "Login"),
     );
     FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
     webviewPlugin.onUrlChanged.listen((String url) async {
