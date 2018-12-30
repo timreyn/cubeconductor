@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message Assignment {
+  optional string activity_id = 1;
+  optional int32 station_number = 2;
+  optional string assignment_code = 3;
+} 

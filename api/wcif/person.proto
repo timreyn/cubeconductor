@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+import "wcif/avatar.proto";
+import "wcif/assignment.proto";
+import "wcif/personal_best.proto";
+import "wcif/registration.proto";
+
+package cubeconductor.api.wcif;
+
+message Person {
+  optional int32 registrant_id = 1;
+  optional string name = 2;
+  optional int32 wca_user_id = 3;
+  optional string wca_id = 4;
+  optional string country_iso2 = 5;
+  // Omitted: gender
+  // Omitted: birthdate
+  // Omitted: email
+  optional Avatar avatar = 6;
+  repeated string roles = 7;
+  optional Registration registration = 8;
+  repeated Assignment assignments = 9;
+  repeated PersonalBest personal_bests = 10;
+} 

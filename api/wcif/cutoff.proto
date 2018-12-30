@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message Cutoff {
+  optional int32 number_of_attempts = 1;
+  optional int32 attempt_result = 2;
+}

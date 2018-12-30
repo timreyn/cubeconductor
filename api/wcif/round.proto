@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+import "wcif/advancement_condition.proto";
+import "wcif/cutoff.proto";
+import "wcif/time_limit.proto";
+
+package cubeconductor.api.wcif;
+
+message Round {
+  optional string id = 1;
+  optional string format = 2;
+  optional TimeLimit time_limit = 3;
+  optional Cutoff cutoff = 4;
+  optional AdvancementCondition advancement_condition = 5;
+  // Omitted: results
+  // Omitted: scrambleSetCount
+  // Omitted: scrambleSets
+}

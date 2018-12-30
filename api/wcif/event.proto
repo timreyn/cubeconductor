@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+import "wcif/round.proto";
+
+package cubeconductor.api.wcif;
+
+message Event {
+  optional string id = 1;
+  repeated Round rounds = 2;
+  // Omitted: competitorLimit
+  // Omitted: qualification
+}

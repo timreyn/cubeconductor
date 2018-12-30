@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+import "wcif/room.proto";
+
+package cubeconductor.api.wcif;
+
+message Venue {
+  optional int32 id = 1;
+  optional string name = 2;
+  optional int64 latitude_microdegrees = 3;
+  optional int64 longitude_microdegrees = 4;
+  optional string timezone = 5;
+  repeated Room rooms = 6;
+}

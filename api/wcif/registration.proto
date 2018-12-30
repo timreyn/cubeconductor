@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message Registration {
+  enum Status {
+    UNKNOWN = 0;
+    accepted = 1;
+    pending = 2;
+    deleted = 3;
+  }
+
+  optional int32 wca_registration_id = 1;
+  repeated string event_ids = 2;
+  optional Status status = 3;
+  // Omitted: guests
+  // Omitted: comments
+}

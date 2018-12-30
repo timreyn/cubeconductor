@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message Avatar {
+  // Omitted: url
+  optional string thumb_url = 1;
+} 

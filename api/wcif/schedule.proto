@@ -1,9 +1,11 @@
 syntax = "proto2";
 
-package cubeconductor.api;
+import "wcif/venue.proto";
+
+package cubeconductor.api.wcif;
 
 message Schedule {
   optional string start_date = 1;
   optional int32 number_of_days = 2;
-  // TODO: venues
+  repeated Venue venues = 3;
 }

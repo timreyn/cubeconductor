@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message TimeLimit {
+  optional int32 centiseconds = 1;
+  repeated string cumulative_round_ids = 2;
+}

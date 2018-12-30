@@ -1,0 +1,13 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message Activity {
+  optional int32 id = 1;
+  optional string name = 2;
+  optional string activity_code = 3;
+  optional string start_time = 4;
+  optional string end_time = 5;
+  repeated Activity child_activities = 6;
+  // Omitted: scrambleSetId
+}

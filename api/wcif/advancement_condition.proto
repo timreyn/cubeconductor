@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message AdvancementCondition {
+  enum Type {
+    unknown = 0;
+    ranking = 1;
+    percent = 2;
+    attemptResult = 3;
+  }
+  optional Type type = 1;
+  optional int32 level = 2;
+}

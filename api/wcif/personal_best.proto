@@ -1,0 +1,18 @@
+syntax = "proto2";
+
+package cubeconductor.api.wcif;
+
+message PersonalBest {
+  enum Type {
+    UNKNOWN = 0;
+    single = 1;
+    average = 2;
+  }
+
+  optional string event_id = 1;
+  optional int32 best = 2;
+  optional string world_ranking = 3;
+  optional string continental_ranking = 4;
+  optional string national_ranking = 5;
+  optional Type type = 6;
+}
