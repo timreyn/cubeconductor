@@ -5,6 +5,16 @@
 
 WATCH=0
 
+rm -r server/src/api
+mkdir -p server/src/api/wcif
+echo """
+import sys
+import os
+
+sys.path.append(os.path.dirname(__file__))
+""" > server/src/api/__init__.py
+cp server/src/api/__init__.py server/src/api/wcif/__init__.py
+
 run_protoc() {
   protoc --proto_path=api --python_out=server/src/api api/wcif/*.proto
 }
