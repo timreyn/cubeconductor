@@ -26,10 +26,18 @@
           </div>
           <div class="collapsible-body">
             {% if competition.enabled %}
-              <a href="{{ c.uri_for('competition_update',
-                                    competition_id=competition.key.id()) }}">
-                Update Competition Info
-              </a>
+              <div>
+                <a href="{{ c.uri_for('competition_update',
+                                      competition_id=competition.key.id()) }}">
+                  Load Data From WCA Site
+                </a>
+              </div>
+              <div>
+                <a href="{{ c.uri_for('edit_competition_data',
+                                      competition_id=competition.key.id()) }}">
+                  Edit Competition Data
+                </a>
+              </div>
             {% else %}
               This competition isn't set up for Cube Conductor yet.
               <a href="{{ c.uri_for('competition_update',

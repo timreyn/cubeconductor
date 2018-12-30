@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="center orange-text">
+    Edit {{ competition_id }}
+  </h1>
+  <form method="POST">
+    <div class="row input-field">
+      <select name="type" id="typeselect">
+        <option value="schedule" selected>Schedule</option>
+        <option value="persons">Persons</option>
+        <option value="events">Events</option>
+      </select>
+    </div>
+    <span id="schedule-data" data-value="{{ schedule_data }}"></span>
+    <span id="persons-data" data-value="{{ persons_data }}"></span>
+    <span id="events-data" data-value="{{ events_data }}"></span>
+    <div class="row center input-field">
+      <textarea rows="6"
+                cols="50"
+                name="data"
+                class="materialize-textarea"
+                id="input-textarea">{{ schedule_data }}</textarea>
+    </div>
+    <input type="hidden" name="code" value="{{ code }}"></input>
+    <div class="row center">
+      <button type="submit" class="btn waves-effect waves-light">Submit</button>
+    </div>
+    </div>
+  </form>
+  <script>
+    window.history.replaceState({}, document.title, "{{ c.uri_for('edit_competition_data', competition_id=competition_id) }}");
+    $(document).ready(function(){
+      $('select').formSelect();
+      $('#typeselect').on('change', function(evt) {
+        var selected = $('#typeselect').val();
+        $('#input-textarea').val(JSON.stringify($('#' + selected + '-data').data('value'), null, 2));
+      });
+    });
+  </script>
+{% endblock %}

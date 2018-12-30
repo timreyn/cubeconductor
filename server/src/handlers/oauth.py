@@ -113,6 +113,18 @@ class OAuthBaseHandler(BaseHandler):
     result = urlfetch.fetch(url=url, headers=headers)
     return result.content
 
+  def PatchWcaApi(self, path, body):
+    if path[0] != '/':
+      path = '/' + path
+    # OAuth token obtained, now read information using the person's token.
+    headers = {'Authorization': 'Bearer ' + self.auth_token,
+               'Content-Type': 'application/json'}
+    url = AppSettings.Get().wca_website + path
+    urlfetch.set_default_fetch_deadline(30)
+    result = urlfetch.fetch(url=url, method=urlfetch.PATCH, headers=headers, payload=body)
+    return result.content
+
+
 class LogoutHandler(BaseHandler):
   def get(self):
     if 'wca_account_number' in self.session:
