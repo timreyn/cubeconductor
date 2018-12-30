@@ -1,3 +1,5 @@
+import 'package:app/api/my_competitions.pb.dart';
+import 'package:app/competition_dates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
@@ -37,9 +39,10 @@ class _UpcomingCompetitionsState extends State<UpcomingCompetitionsWidget> {
 
   List<Widget> competitionRows() {
     List<Widget> rows = new List();
-    rows.addAll(_sharedState.competitionState.myCompetitions
-        .map((SlimCompetition c) {
-      Duration timeUntilStart = c.startDate.difference(DateTime.now());
+    rows.addAll(_sharedState.competitionState.myCompetitions.entries
+        .map((MyCompetitionsEntry c) {
+      Duration timeUntilStart =
+          startDate(c.competition).difference(DateTime.now());
 
       return new Container(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
@@ -51,20 +54,18 @@ class _UpcomingCompetitionsState extends State<UpcomingCompetitionsWidget> {
           padding: const EdgeInsets.all(20.0),
           child: new Column(
             children: <Widget>[
-              new Text(
-                    c.name,
-                    style: new TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15.0,
-                    )),
-
-              new Text(
-                  "Starts in " + (timeUntilStart.inDays + 1).toString() + " days",
+              new Text(c.competition.name,
                   style: new TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 10.0,
-                  ),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.0,
+                  )),
+              new Text(
+                "Starts in " + (timeUntilStart.inDays + 1).toString() + " days",
+                style: new TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: 10.0,
                 ),
+              ),
             ],
           ),
         ),

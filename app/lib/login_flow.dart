@@ -1,5 +1,7 @@
+import 'package:app/api/user.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:protobuf/protobuf.dart';
 import 'package:semaphore/semaphore.dart';
 
 import 'app_bar.dart';
@@ -77,9 +79,8 @@ class LoginFlowState extends State<LoginFlowWidget> {
           .replaceAll("\\\\", "\\");
       loginState.setCookie(cookie.split(";"));
 
-      BackendFetcher fetcher =
-      new BackendFetcher(sharedState);
-      loginState.setLoginInfo(await fetcher.get("/api/v0/me"));
+      BackendFetcher fetcher = new BackendFetcher(sharedState);
+      loginState.setUser(await fetcher.get("/api/v0/me", new User()));
       sharedState.competitionState.updateMyCompetitionsData().then((_) {
         Navigator.pushReplacementNamed(context, "/upcoming");
       });

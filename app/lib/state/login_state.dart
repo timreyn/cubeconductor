@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:app/api/user.pb.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/user.dart';
 import '../prefs.dart';
 
 class LoginState {
@@ -19,21 +19,16 @@ class LoginState {
 
   void setCookie(List<String> cookie) {
     setStringListPreference(sharedPreferences, Prefs.cookie, cookie);
-    setIntPreference(
-        sharedPreferences, Prefs.lastLoginTime,
+    setIntPreference(sharedPreferences, Prefs.lastLoginTime,
         new DateTime.now().millisecondsSinceEpoch);
   }
 
   User getUser() {
-    String userInfo = getPreference(sharedPreferences, Prefs.userInfo);
-    if (userInfo == null) {
-      return null;
-    }
-    return User(json.decode(userInfo));
+    return getPreference(sharedPreferences, Prefs.user);
   }
 
-  void setLoginInfo(String loginInfo) {
-    setStringPreference(sharedPreferences, Prefs.userInfo, loginInfo);
+  void setUser(User user) {
+    setProtoPreference(sharedPreferences, Prefs.user, user);
   }
 
   void logOut() {
@@ -41,7 +36,7 @@ class LoginState {
     webviewPlugin.cleanCookies();
     removePreference(sharedPreferences, Prefs.cookie);
     removePreference(sharedPreferences, Prefs.lastLoginTime);
-    removePreference(sharedPreferences, Prefs.userInfo);
+    removePreference(sharedPreferences, Prefs.user);
   }
 
   SharedPreferences sharedPreferences;

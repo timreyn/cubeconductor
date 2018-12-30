@@ -9,8 +9,9 @@ class SplashWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    sharedState.awaitReady().then((_) =>
-        Navigator.pushReplacementNamed(context, "/home"));
+    sharedState
+        .awaitReady()
+        .then((_) => Navigator.pushReplacementNamed(context, "/home"));
     return new Scaffold(
       body: new Center(
         child: new Text(

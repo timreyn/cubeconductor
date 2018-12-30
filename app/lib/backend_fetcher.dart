@@ -1,21 +1,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dart:convert';
+import 'package:protobuf/protobuf.dart';
 import 'prefs.dart';
 import 'state/shared_state.dart';
 
 class BackendFetcher {
   BackendFetcher(this.sharedState);
 
-  Future<String> get(String path, [Map<String, String> queryParameters]) async {
+  Future<T> get<T extends GeneratedMessage>(String path, T message,
+      [Map<String, String> queryParameters]) async {
     SharedPreferences sharedPreferences = sharedState.sharedPreferences;
 
     HttpClient httpClient = new HttpClient();
-    Uri uri = new Uri.https(
-        getPreference(sharedPreferences, Prefs.serverUrl),
+    Uri uri = new Uri.https(getPreference(sharedPreferences, Prefs.serverUrl),
         path, queryParameters);
     HttpClientRequest request = await httpClient.getUrl(uri);
     try {
@@ -27,8 +30,11 @@ class BackendFetcher {
     } catch (e) {
       print(e.toString());
     }
-    HttpClientResponse response = await request.close();
-    return response.transform(utf8.decoder).join();
+    var response = await request.close();
+    var responseBody = response.transform(utf8.decoder).join();
+
+    message.mergeFromBuffer(new Base64Decoder().convert(await responseBody));
+    return message;
   }
 
   final SharedState sharedState;
