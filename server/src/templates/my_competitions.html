@@ -14,10 +14,11 @@
     </h5>
     <ul class="collapsible">
       {% for competition in managed_competitions %}
+        {% set proto = competition.Proto() %}
         <li>
           <div class="collapsible-header">
             <i class="material-icons">event</i>
-            {{ competition.name }}
+            {{ proto.name }}
             <span class="text-lighten-2 badge">
               {% autoescape false %}
                 {{ competition.FormatDates() }}
@@ -56,10 +57,11 @@
     </h5>
     <ul class="collapsible">
       {% for competition in my_competitions %}
+        {% set proto = competition.Proto() %}
         <li>
           <div class="collapsible-header">
             <i class="material-icons">event</i>
-            {{ competition.name }}
+            {{ proto.name }}
             <span class="text-lighten-2 badge">
               {% autoescape false %}
                 {{ competition.FormatDates() }}

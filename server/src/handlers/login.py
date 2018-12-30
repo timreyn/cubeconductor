@@ -27,7 +27,7 @@ class LoginHandler(OAuthBaseHandler):
     self.session['login_time'] = (
         datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds()
     user = User.get_by_id(wca_info['id']) or User(id=wca_info['id'])
-    user.FromDict(wca_info)
+    user.FromDict(json.dumps(wca_info))
 
     user.last_login = datetime.datetime.now()
     user.put()

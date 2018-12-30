@@ -1,99 +1,74 @@
+import base64
 import datetime
 import json
 
 from google.appengine.ext import ndb
+from google.protobuf import json_format
 
-# Drop fields we don't care to save.
-def StripWcif(competition_dict):
-  for event in competition_dict['events']:
-    event.pop('competitorLimit', None)
-    event.pop('qualification', None)
-    for r in event['rounds']:
-      r.pop('results', None)
-      r.pop('scrambleSetCount', None)
-      r.pop('scrambleSets', None)
+from src.api.wcif import competition_pb2
+from src.api.wcif import schedule_pb2
 
-  def status(person):
-    if 'registration' not in person:
-      return 'n/a'
-    if not person['registration']:
-      return 'n/a'
-    return person['registration'].get('status', 'n/a')
-
-  competition_dict['persons'] = filter(
-      lambda person: status(person) in ('accepted', 'n/a'),
-      competition_dict['persons'])
-  for person in competition_dict['persons']:
-    person.pop('gender', None)
-    person.pop('birthdate', None)
-    person.pop('email', None)
-    for best in person.get('personalBests', []):
-      best.pop('worldRanking', None)
-      best.pop('continentalRanking', None)
-      best.pop('nationalRanking', None)
-    registration = person['registration'] or {}
-    registration.pop('status', None)
-    registration.pop('guests', None)
-    registration.pop('comments', None)
 
 class Competition(ndb.Model):
-  name = ndb.StringProperty()
-  short_name = ndb.StringProperty()
-
-  city = ndb.StringProperty()
-  country_iso2 = ndb.StringProperty()
-
-  start_date = ndb.DateProperty()
-  end_date = ndb.DateProperty()
-
-  competition_wcif = ndb.TextProperty()
+  base64 = ndb.TextProperty()
 
   enabled = ndb.BooleanProperty()
 
-  def FromCompetitionSearch(self, competition_dict):
-    self.name = competition_dict['name']
-    self.short_name = competition_dict['short_name']
+  @staticmethod
+  def FromCompetitionSearch(competition_dict):
+    competition_proto = competition_pb2.Competition(
+        id=competition_dict['id'])
 
-    self.city = competition_dict['city']
-    self.country_iso2 = competition_dict['country_iso2']
+    start_date = datetime.datetime.strptime(competition_dict['start_date'],
+                                            '%Y-%m-%d').date()
+    end_date = datetime.datetime.strptime(competition_dict['end_date'],
+                                          '%Y-%m-%d').date()
 
-    self.start_date = datetime.datetime.strptime(competition_dict['start_date'],
-                                                 '%Y-%m-%d').date()
-    self.end_date = datetime.datetime.strptime(competition_dict['end_date'],
-                                               '%Y-%m-%d').date()
+    competition_proto.schedule.start_date = competition_dict['start_date']
+    competition_proto.schedule.number_of_days = int(
+        (end_date - start_date).total_seconds() /
+        datetime.timedelta(days=1).total_seconds() + 1)
 
-  def FromWcifDict(self, competition_dict):
-    self.name = competition_dict['name']
-    self.short_name = competition_dict['shortName']
+    competition = Competition(id=competition_proto.id)
+    competition.base64 = base64.urlsafe_b64encode(competition_proto.SerializeToString())
+    return competition
 
-    self.start_date = datetime.datetime.strptime(
-                          competition_dict['schedule']['startDate'],
-                          '%Y-%m-%d').date()
-    self.end_date = (self.start_date +
-                     datetime.timedelta(days=competition_dict['schedule']['numberOfDays'] - 1))
+  @staticmethod
+  def FromWcifJson(competition_json):
+    competition_proto = json_format.Parse(
+        competition_json, competition_pb2.Competition(),
+        ignore_unknown_fields=True)
 
-    StripWcif(competition_dict)
-    self.competition_wcif = json.dumps(competition_dict)
-    self.enabled = True
+    competition = Competition(id=competition_proto.id)
+    competition.base64 = base64.urlsafe_b64encode(competition_proto.SerializeToString())
+    competition.enabled = True
+    return competition
 
-  def ToDict(self):
-    return {
-        'id': self.key.id(),
-        'name': self.name,
-        'shortName': self.short_name,
-        'startDate': self.start_date.strftime('%Y-%m-%d'),
-        'endDate': self.start_date.strftime('%Y-%m-%d'),
-    }
+  def Proto(self):
+    competition_proto = competition_pb2.Competition()
+    competition_proto.ParseFromString(base64.urlsafe_b64decode(str(self.base64)))
+    return competition_proto
+
+  def ThinProto(self):
+    proto = self.Proto()
+    del proto.persons[:]
+    del proto.events[:]
+    del proto.schedule.venues[:]
+    return proto
 
   def FormatDates(self):
-    if self.start_date == self.end_date:
-      return self.start_date.strftime('%B %-d, %Y')
-    elif self.start_date.year != self.end_date.year:
-      return ('%s &ndash; %s' % (self.start_date.strftime('%B %-d, %Y'),
-                                 self.end_date.strftime('%B %-d, %Y')))
-    elif self.start_date.month != self.end_date.month:
-      return ('%s &ndash; %s' % (self.start_date.strftime('%B %-d'),
-                                 self.end_date.strftime('%B %-d, %Y')))
+    proto = self.Proto()
+    start_date = datetime.datetime.strptime(proto.schedule.start_date, '%Y-%m-%d').date()
+    end_date = start_date + datetime.timedelta(days=proto.schedule.number_of_days)
+
+    if start_date == end_date:
+      return start_date.strftime('%B %-d, %Y')
+    elif start_date.year != end_date.year:
+      return ('%s &ndash; %s' % (start_date.strftime('%B %-d, %Y'),
+                                 end_date.strftime('%B %-d, %Y')))
+    elif start_date.month != end_date.month:
+      return ('%s &ndash; %s' % (start_date.strftime('%B %-d'),
+                                 end_date.strftime('%B %-d, %Y')))
     else:
-      return ('%s &ndash; %s' % (self.start_date.strftime('%B %-d'),
-                                 self.end_date.strftime('%-d, %Y')))
+      return ('%s &ndash; %s' % (start_date.strftime('%B %-d'),
+                                 end_date.strftime('%-d, %Y')))

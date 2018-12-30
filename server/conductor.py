@@ -26,7 +26,6 @@ app = webapp2.WSGIApplication([
                 name='competition_update'),
   webapp2.Route('/competition/<competition_id:.*>/edit', handler=EditCompetitionDataHandler,
                 name='edit_competition_data'),
-  webapp2.Route('/api/v0/competition/<competition_id:.*>/wcif', handler=CompetitionWcifHandler),
   webapp2.Route('/api/v0/competition/<competition_id:.*>/proto', handler=CompetitionProtoHandler),
   webapp2.Route('/api/v0/me', handler=MeHandler),
   webapp2.Route('/api/v0/my_competitions', handler=MyCompetitionsApiHandler),

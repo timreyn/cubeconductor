@@ -3,6 +3,7 @@ import urllib
 import webapp2
 
 from google.appengine.ext import ndb
+from google.protobuf import json_format
 
 from src import common
 from src.models.competition import Competition
@@ -33,21 +34,24 @@ class EditCompetitionDataHandler(OAuthBaseHandler):
 
     template = JINJA_ENVIRONMENT.get_template('edit_competition_data.html')
     competition = Competition.get_by_id(competition_id)
-    competition_wcif = json.loads(competition.competition_wcif)
+    competition_proto = competition.Proto()
+    competition_json = json.loads(json_format.MessageToJson(competition_proto))
     self.response.write(template.render({
         'c': common.Common(self),
         'code': self.auth_token,
         'competition_id': competition_id,
-        'schedule_data': json.dumps(competition_wcif['schedule'], indent=2),
-        'persons_data': json.dumps(competition_wcif['persons'], indent=2),
-        'events_data': json.dumps(competition_wcif['events'], indent=2),
+        'schedule_data': json.dumps(competition_json['schedule'], indent=2),
+        'persons_data': json.dumps(competition_json['persons'], indent=2),
+        'events_data': json.dumps(competition_json['events'], indent=2),
     }))
 
   def post(self, competition_id):
     body = self.request.POST['data']
     self.auth_token = self.request.POST['code']
 
-    response = self.PatchWcaApi('/api/v0/competitions/%s/wcif/schedule' % competition_id, body)
+    response = self.PatchWcaApi('/api/v0/competitions/%s/wcif/%s' %
+                                    (competition_id, self.request.POST['type']),
+                                body)
     response_json = json.loads(response)
 
     self.redirect_to('competition_update', competition_id=competition_id)

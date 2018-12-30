@@ -34,9 +34,9 @@ class UpdateCompetitionHandler(OAuthBaseHandler):
     response = self.GetWcaApi('/api/v0/competitions/%s/wcif' % competition_id)
     response_json = json.loads(response)
 
-    competition = Competition.get_by_id(competition_id) or Competition(id=competition_id)
-    competition.FromWcifDict(response_json)
+    competition = Competition.FromWcifJson(response)
     competition.put()
+    proto = competition.Proto()
 
     new_competitors = {person['wcaUserId'] : person for person in response_json['persons']}
     old_competitors = {registration.user.id() : registration for registration in
