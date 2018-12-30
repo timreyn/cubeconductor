@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+import 'event.proto';
+import 'person.proto';
+import 'schedule.proto';
+
+package cubeconductor.api;
+
+message Competition {
+  optional string id = 1;
+  optional string name = 2;
+  optional string short_name = 3;
+  repeated Person persons = 4;
+  repeated Event events = 5;
+  optional Schedule schedule = 6;
+}

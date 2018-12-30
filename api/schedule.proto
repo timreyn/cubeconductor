@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package cubeconductor.api;
+
+message Schedule {
+  optional string start_date = 1;
+  optional int32 number_of_days = 2;
+  // TODO: venues
+}

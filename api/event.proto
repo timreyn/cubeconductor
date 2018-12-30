@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package cubeconductor.api;
+
+message Event {
+  optional string id = 1;
+  // TODO: rounds
+  optional int32 competitor_limit = 3;
+  // TODO: qualification
+}
