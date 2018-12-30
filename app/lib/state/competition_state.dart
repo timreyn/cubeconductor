@@ -1,8 +1,8 @@
 import 'dart:async';
+
 import 'package:app/api/my_competitions.pb.dart';
 import 'package:app/api/wcif/competition.pb.dart';
 import 'package:app/competition_dates.dart';
-import 'package:protobuf/protobuf.dart';
 
 import '../backend_fetcher.dart';
 import 'shared_state.dart';

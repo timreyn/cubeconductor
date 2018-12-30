@@ -1,11 +1,10 @@
 import 'package:app/api/my_competitions.pb.dart';
 import 'package:app/competition_dates.dart';
+import 'package:app/state/shared_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
 import 'app_bar.dart';
-import 'package:app/state/competition_state.dart';
-import 'package:app/state/shared_state.dart';
 
 class UpcomingCompetitionsWidget extends StatefulWidget {
   UpcomingCompetitionsWidget(this._sharedState, {Key key}) : super(key: key);

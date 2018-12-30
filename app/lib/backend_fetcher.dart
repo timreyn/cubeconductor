@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:protobuf/protobuf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dart:convert';
-import 'package:protobuf/protobuf.dart';
 import 'prefs.dart';
 import 'state/shared_state.dart';
 

@@ -1,7 +1,6 @@
 import 'package:app/api/user.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:protobuf/protobuf.dart';
 import 'package:semaphore/semaphore.dart';
 
 import 'app_bar.dart';

@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mutex/mutex.dart';
 
 import 'package:app/state/competition_state.dart';
 import 'package:app/state/login_state.dart';
+import 'package:mutex/mutex.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedState {
   SharedState() {

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/api/user.pb.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';

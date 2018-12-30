@@ -1,8 +1,8 @@
+import 'package:app/state/shared_state.dart';
 import 'package:flutter/material.dart';
 
 import 'app_bar.dart';
 import 'login_flow.dart';
-import 'package:app/state/shared_state.dart';
 import 'splash.dart';
 import 'upcoming_competitions.dart';
 
