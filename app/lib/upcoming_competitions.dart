@@ -20,7 +20,6 @@ class _UpcomingCompetitionsState extends State<UpcomingCompetitionsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("building upcoming competition");
     if (!_sharedState.loginState.isLoggedIn()) {
       Navigator.pushReplacementNamed(context, "/login");
       return new Container();
