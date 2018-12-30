@@ -11,8 +11,8 @@ message PersonalBest {
 
   optional string event_id = 1;
   optional int32 best = 2;
-  optional string world_ranking = 3;
-  optional string continental_ranking = 4;
-  optional string national_ranking = 5;
+  optional int32 world_ranking = 3;
+  optional int32 continental_ranking = 4;
+  optional int32 national_ranking = 5;
   optional Type type = 6;
 }
