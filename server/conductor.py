@@ -1,6 +1,7 @@
 import webapp2
 
 from src import config
+from src.handlers.api.v0.competition_proto import CompetitionProtoHandler
 from src.handlers.api.v0.competition_wcif import CompetitionWcifHandler
 from src.handlers.api.v0.me import MeHandler
 from src.handlers.api.v0.my_competitions import MyCompetitionsApiHandler
@@ -26,6 +27,7 @@ app = webapp2.WSGIApplication([
   webapp2.Route('/competition/<competition_id:.*>/edit', handler=EditCompetitionDataHandler,
                 name='edit_competition_data'),
   webapp2.Route('/api/v0/competition/<competition_id:.*>/wcif', handler=CompetitionWcifHandler),
+  webapp2.Route('/api/v0/competition/<competition_id:.*>/proto', handler=CompetitionProtoHandler),
   webapp2.Route('/api/v0/me', handler=MeHandler),
   webapp2.Route('/api/v0/my_competitions', handler=MyCompetitionsApiHandler),
 ], config=config.GetAppConfig())
