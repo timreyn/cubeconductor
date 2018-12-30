@@ -1,13 +1,12 @@
 import 'package:app/api/user.pb.dart';
+import 'package:app/app_bar.dart';
+import 'package:app/backend_fetcher.dart';
+import 'package:app/prefs.dart';
+import 'package:app/state/login_state.dart';
+import 'package:app/state/shared_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:semaphore/semaphore.dart';
-
-import 'app_bar.dart';
-import 'backend_fetcher.dart';
-import 'prefs.dart';
-import 'state/login_state.dart';
-import 'state/shared_state.dart';
 
 class LoginFlowWidget extends StatefulWidget {
   LoginFlowWidget(this.sharedState, {Key key}) : super(key: key);

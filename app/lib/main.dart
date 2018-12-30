@@ -1,10 +1,9 @@
+import 'package:app/app_bar.dart';
+import 'package:app/login_flow.dart';
+import 'package:app/splash.dart';
 import 'package:app/state/shared_state.dart';
+import 'package:app/upcoming_competitions.dart';
 import 'package:flutter/material.dart';
-
-import 'app_bar.dart';
-import 'login_flow.dart';
-import 'splash.dart';
-import 'upcoming_competitions.dart';
 
 void main() => runApp(new CubeConductorApp());
 

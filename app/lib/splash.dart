@@ -1,6 +1,5 @@
+import 'package:app/state/shared_state.dart';
 import 'package:flutter/material.dart';
-
-import 'state/shared_state.dart';
 
 class SplashWidget extends StatelessWidget {
   SplashWidget(this.sharedState, {Key key}) : super(key: key);

@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:app/api/my_competitions.pb.dart';
 import 'package:app/api/wcif/competition.pb.dart';
+import 'package:app/backend_fetcher.dart';
 import 'package:app/competition_dates.dart';
-
-import '../backend_fetcher.dart';
-import 'shared_state.dart';
+import 'package:app/state/shared_state.dart';
 
 class CompetitionState {
   CompetitionState(this._sharedState)

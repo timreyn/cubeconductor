@@ -1,8 +1,7 @@
 import 'package:app/api/user.pb.dart';
+import 'package:app/prefs.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../prefs.dart';
 
 class LoginState {
   LoginState({this.sharedPreferences});

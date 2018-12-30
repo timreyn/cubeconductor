@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:app/prefs.dart';
+import 'package:app/state/shared_state.dart';
 import 'package:protobuf/protobuf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'prefs.dart';
-import 'state/shared_state.dart';
 
 class BackendFetcher {
   BackendFetcher(this.sharedState);
