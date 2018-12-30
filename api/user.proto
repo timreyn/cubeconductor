@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+import "wcif/avatar.proto";
+
+package cubeconductor.api;
+
+enum DelegateStatus {
+  NON_DELEGATE = 0;
+  candidate_delegate = 1;
+  delegate = 2;
+  senior_delegate = 3;
+}
+
+message User {
+  optional int32 id = 1;
+  optional string name = 2;
+  optional string wca_id = 3;
+  optional string country_iso2 = 4;
+  optional DelegateStatus delegate_status = 5;
+  optional wcif.Avatar avatar = 6;
+  optional string email = 7;
+}

@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+import "wcif/competition.proto";
+
+package cubeconductor.api;
+
+message MyCompetitionsEntry {
+  optional wcif.Competition competition = 1;
+  optional bool is_admin = 2;
+}
+
+message MyCompetitions {
+  repeated MyCompetitionsEntry entries = 1; 
+}
