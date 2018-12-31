@@ -23,7 +23,7 @@ class CompetitionState {
   }
 
   Future<void> updateMyCompetitionsData() async {
-    _backendFetcher.get("/api/v0/my_competitions", myCompetitions);
+    myCompetitions = await _backendFetcher.get("/api/v0/my_competitions", new MyCompetitions());
 
     DateTime now = DateTime.now().toLocal();
     ongoingCompetition = null;
