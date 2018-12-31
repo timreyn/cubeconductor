@@ -18,6 +18,8 @@ class Competition(ndb.Model):
   def FromCompetitionSearch(competition_dict):
     competition_proto = competition_pb2.Competition(
         id=competition_dict['id'])
+    competition_proto.name = competition_dict['name']
+    competition_proto.short_name = competition_dict['short_name']
 
     start_date = datetime.datetime.strptime(competition_dict['start_date'],
                                             '%Y-%m-%d').date()
