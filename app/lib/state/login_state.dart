@@ -21,7 +21,7 @@ class LoginState {
   }
 
   User getUser() {
-    return getPreference(sharedPreferences, Prefs.user);
+    return getProtoPreference(sharedPreferences, Prefs.user, new User());
   }
 
   void setUser(User user) {
