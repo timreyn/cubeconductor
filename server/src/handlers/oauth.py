@@ -34,7 +34,7 @@ class AuthenticateHandler(BaseHandler):
     }
 
     oauth_url = app_settings.wca_website + '/oauth/authorize?' + urllib.urlencode(params)
-    self.redirect(oauth_url)
+    self.redirect(str(oauth_url))
 
 class OAuthCallbackHandler(BaseHandler):
   def get(self):
