@@ -7,6 +7,7 @@ from google.protobuf import json_format
 
 from src import common
 from src.models.competition import Competition
+from src.models.refresh_token import RefreshToken
 from src.models.registration import Registration
 from src.models.user import User
 from src.handlers.oauth import OAuthBaseHandler
@@ -32,26 +33,25 @@ class EditCompetitionDataHandler(OAuthBaseHandler):
     if not self.auth_token:
       return
 
+    response = self.GetWcaApi('/api/v0/competitions/%s/wcif' % competition_id)
+    response_json = json.loads(response)
+
     template = JINJA_ENVIRONMENT.get_template('edit_competition_data.html')
-    competition = Competition.get_by_id(competition_id)
-    competition_proto = competition.Proto()
-    competition_json = json.loads(json_format.MessageToJson(competition_proto))
     self.response.write(template.render({
         'c': common.Common(self),
-        'code': self.auth_token,
         'competition_id': competition_id,
-        'schedule_data': json.dumps(competition_json['schedule'], indent=2),
-        'persons_data': json.dumps(competition_json['persons'], indent=2),
-        'events_data': json.dumps(competition_json['events'], indent=2),
+        'schedule_data': json.dumps(response_json['schedule'], indent=2, sort_keys=True),
+        'persons_data': json.dumps(response_json['persons'], indent=2, sort_keys=True),
+        'events_data': json.dumps(response_json['events'], indent=2, sort_keys=True),
     }))
 
   def post(self, competition_id):
     body = self.request.POST['data']
-    self.auth_token = self.request.POST['code']
+    refresh_token = RefreshToken.get_by_id(self.user.key.id())
+    self.GetTokenFromRefreshToken(refresh_token)
 
     response = self.PatchWcaApi('/api/v0/competitions/%s/wcif/%s' %
                                     (competition_id, self.request.POST['type']),
                                 body)
-    response_json = json.loads(response)
 
     self.redirect_to('competition_update', competition_id=competition_id)
