@@ -11,7 +11,7 @@ class AppSettingsHandler(BaseHandler):
 
   def post(self):
     settings = AppSettings.Get()
-    for prop, val in self.request.POST:
+    for prop, val in self.request.POST.items():
       if prop.startswith('PROP_'):
         setattr(settings, prop[5:], val)
     settings.put()
