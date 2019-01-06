@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/api/user.pb.dart';
 import 'package:app/util/backend_fetcher.dart';
 import 'package:app/widgets/app_bar.dart';
@@ -38,21 +40,36 @@ class _MainState extends State<HomeWidget> {
       });
       return _loadingWidget();
     }
+
+    Widget widget = null;
+
     switch (_activeFlow) {
       case _ActiveFlow.HOME:
-        return _mainPageWidget();
+        widget = _mainPageWidget();
+        break;
       case _ActiveFlow.LOGIN:
-        return new LoginWidget(
+        widget = new LoginWidget(
           onLoginComplete: _onLoginComplete,
           sharedPreferences: _sharedPreferences,
         );
+        break;
       case _ActiveFlow.SETTINGS:
-        return new SettingsWidget(
+        widget = new SettingsWidget(
           defaultMenuItems: _defaultMenuItems(),
           sharedPreferences: _sharedPreferences,
         );
+        break;
     }
-    return null;
+
+    return new WillPopScope(child: widget, onWillPop: () {
+      if (_activeFlow == _ActiveFlow.HOME) {
+        exit(0);
+      } else {
+        setState(() {
+          _activeFlow = _ActiveFlow.HOME;
+        });
+      }
+    });
   }
 
   Widget _mainPageWidget() {
