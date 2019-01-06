@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:app/util/prefs.dart';
 import 'package:protobuf/protobuf.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BackendFetcher {
   BackendFetcher();
@@ -13,8 +15,11 @@ class BackendFetcher {
 
   Future<T> get<T extends GeneratedMessage>(String path, T message,
       [Map<String, String> queryParameters]) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     HttpClient httpClient = new HttpClient();
-    Uri uri = new Uri.https("cube-conductor.appspot.com", path, queryParameters);
+    Uri uri = new Uri.https(
+        getPreference(sharedPreferences, Prefs.serverUrl),
+        path, queryParameters);
     HttpClientRequest request = await httpClient.getUrl(uri);
     try {
       _cookie.forEach((String segment) {

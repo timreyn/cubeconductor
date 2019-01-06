@@ -1,13 +1,19 @@
+import 'package:app/util/prefs.dart';
 import 'package:app/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginWidget extends StatelessWidget {
-  LoginWidget({Key key, @required this.onLoginComplete}) : super(key: key);
+  LoginWidget(
+      {Key key,
+      @required this.onLoginComplete,
+      @required this.sharedPreferences})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String host = "cube-conductor.appspot.com";
+    String host = getPreference(sharedPreferences, Prefs.serverUrl);
     String url = new Uri(
       scheme: 'https',
       host: host,
@@ -44,4 +50,5 @@ class LoginWidget extends StatelessWidget {
   }
 
   final ValueChanged<List<String>> onLoginComplete;
+  final SharedPreferences sharedPreferences;
 }
