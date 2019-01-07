@@ -9,7 +9,7 @@ class SettingsWidget extends StatelessWidget {
       {@required this.defaultMenuItems,
       @required this.sharedPreferences,
       @required this.logOut,
-        @required this.showSnackBar,
+      @required this.showSnackBar,
       Key key})
       : _formKey = new GlobalKey(),
         super(key: key);
