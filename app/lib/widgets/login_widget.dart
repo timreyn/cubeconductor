@@ -29,7 +29,6 @@ class LoginWidget extends StatelessWidget {
     );
     FlutterWebviewPlugin webviewPlugin = new FlutterWebviewPlugin();
     webviewPlugin.onUrlChanged.listen((String url) async {
-      print(url);
       Uri uri = Uri.parse(url);
       if (uri.path != '/login_flow_complete') {
         return;

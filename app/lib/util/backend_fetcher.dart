@@ -7,22 +7,21 @@ import 'package:protobuf/protobuf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BackendFetcher {
-  BackendFetcher();
+  BackendFetcher(this._sharedPreferences);
 
   void setCookie(List<String> cookie) {
-    this._cookie = cookie;
+    setStringListPreference(_sharedPreferences, Prefs.cookie, cookie);
   }
 
   Future<T> get<T extends GeneratedMessage>(String path, T message,
       [Map<String, String> queryParameters]) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     HttpClient httpClient = new HttpClient();
-    Uri uri = new Uri.https(
-        getPreference(sharedPreferences, Prefs.serverUrl),
+    Uri uri = new Uri.https(getPreference(_sharedPreferences, Prefs.serverUrl),
         path, queryParameters);
     HttpClientRequest request = await httpClient.getUrl(uri);
     try {
-      _cookie.forEach((String segment) {
+      getStringListPreference(_sharedPreferences, Prefs.cookie)
+          .forEach((String segment) {
         var segmentSplit = segment.split("=");
         request.cookies.add(
             Cookie(segmentSplit[0], segmentSplit[1].replaceAll("\\075", "=")));
@@ -38,4 +37,5 @@ class BackendFetcher {
   }
 
   List<String> _cookie;
+  SharedPreferences _sharedPreferences;
 }

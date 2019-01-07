@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app/api/user.pb.dart';
 import 'package:app/util/backend_fetcher.dart';
+import 'package:app/util/prefs.dart';
 import 'package:app/widgets/app_bar.dart';
 import 'package:app/widgets/login_widget.dart';
 import 'package:app/widgets/settings_widget.dart';
@@ -27,8 +28,9 @@ class _MainState extends State<HomeWidget> {
 
   User _user;
   _ActiveFlow _activeFlow = _ActiveFlow.HOME;
-  BackendFetcher _backendFetcher = new BackendFetcher();
+  BackendFetcher _backendFetcher;
   SharedPreferences _sharedPreferences;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +38,21 @@ class _MainState extends State<HomeWidget> {
       SharedPreferences.getInstance().then((SharedPreferences prefs) {
         setState(() {
           _sharedPreferences = prefs;
+          _backendFetcher = new BackendFetcher(_sharedPreferences);
+          _user =
+              getProtoPreference(_sharedPreferences, Prefs.user, new User());
         });
       });
       return _loadingWidget();
     }
 
-    Widget widget = null;
+    Widget widget;
+    String title = "Cube Conductor";
+    List<MenuItem> menuItems = _defaultMenuItems();
 
     switch (_activeFlow) {
       case _ActiveFlow.HOME:
-        widget = _mainPageWidget();
+        widget = _makeScaffold(_mainPageWidget(), menuItems, title);
         break;
       case _ActiveFlow.LOGIN:
         widget = new LoginWidget(
@@ -54,31 +61,45 @@ class _MainState extends State<HomeWidget> {
         );
         break;
       case _ActiveFlow.SETTINGS:
-        widget = new SettingsWidget(
+        SettingsWidget settingsWidget = new SettingsWidget(
           defaultMenuItems: _defaultMenuItems(),
           sharedPreferences: _sharedPreferences,
+          logOut: _logOut,
+          showSnackBar: _showSnackBar,
         );
+        title = settingsWidget.title();
+        widget = _makeScaffold(settingsWidget, menuItems, title);
         break;
     }
 
-    return new WillPopScope(child: widget, onWillPop: () {
-      if (_activeFlow == _ActiveFlow.HOME) {
-        exit(0);
-      } else {
-        setState(() {
-          _activeFlow = _ActiveFlow.HOME;
-        });
-      }
-    });
+    return new WillPopScope(
+      child: widget,
+      onWillPop: () {
+        if (_activeFlow == _ActiveFlow.HOME) {
+          exit(0);
+        } else {
+          setState(() {
+            _activeFlow = _ActiveFlow.HOME;
+          });
+        }
+      },
+    );
   }
 
   Widget _mainPageWidget() {
+    return new Center(
+      child: new Text(
+        'Welcome to Cube Conductor!!!',
+      ),
+    );
+  }
+
+  Widget _makeScaffold(Widget body, List<MenuItem> menuItems, String title) {
     return new Scaffold(
-      appBar: buildAppBar(context, _defaultMenuItems(), "Cube Conductor"),
-      body: new Center(
-        child: new Text(
-          'Welcome to Cube Conductor!!!',
-        ),
+      key: _scaffoldKey,
+      appBar: buildAppBar(context, menuItems, title),
+      body: Builder(
+        builder: (context) => body,
       ),
     );
   }
@@ -90,30 +111,25 @@ class _MainState extends State<HomeWidget> {
           text: "Log in",
           onClick: () {
             setState(() {
-            _activeFlow = _ActiveFlow.LOGIN;
+              _activeFlow = _ActiveFlow.LOGIN;
             });
           }));
     } else {
-      items.add(new MenuItem(
-          text: "Log out, " + _user.name,
-          onClick: () {
-            setState(() {
-              _user = null;
-            });
-          }));
+      items.add(new MenuItem(text: "Log out, " + _user.name, onClick: () => _logOut(context)));
     }
     items.add(new MenuItem(
-      text: "Settings",
-      onClick: () {
-        setState(() {
-          _activeFlow = _ActiveFlow.SETTINGS;
-        });
-      }));
+        text: "Settings",
+        onClick: () {
+          setState(() {
+            _activeFlow = _ActiveFlow.SETTINGS;
+          });
+        }));
     return items;
   }
 
   Widget _loadingWidget() {
     return new Scaffold(
+      key: _scaffoldKey,
       appBar: buildAppBar(context, _defaultMenuItems(), "Cube Conductor"),
       body: new Center(
         child: new Text(
@@ -124,13 +140,32 @@ class _MainState extends State<HomeWidget> {
   }
 
   void _onLoginComplete(List<String> cookie) {
+    // TODO: make this show a SnackBar.
+    // _showSnackBar(new Text("Logged in!"));
     _backendFetcher.setCookie(cookie);
     User user = new User();
     _backendFetcher.get("/api/v0/me", user).then((User user) {
       setState(() {
         _user = user;
         _activeFlow = _ActiveFlow.HOME;
+        setProtoPreference(_sharedPreferences, Prefs.user, user);
       });
     });
+  }
+
+  void _logOut(BuildContext context) {
+    _showSnackBar(new Text("Logged out!"));
+    setState(() {
+      _user = null;
+      removePreference(_sharedPreferences, Prefs.user);
+      removePreference(_sharedPreferences, Prefs.cookie);
+      _activeFlow = _ActiveFlow.HOME;
+    });
+  }
+
+  void _showSnackBar(Widget content) {
+    if (_scaffoldKey.currentState != null) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(content: content));
+    }
   }
 }
