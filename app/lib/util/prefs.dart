@@ -17,9 +17,6 @@ class Prefs {
   static final Pref<List<String>> cookie = new Pref<List<String>>(
     key: "PREF_COOKIE",
   );
-  static final Pref<int> lastLoginTime = new Pref<int>(
-    key: "PREF_LAST_LOGIN_TIME",
-  );
   static final Pref<User> user = new Pref<User>(
     key: "PREF_USER_INFO",
   );
