@@ -4,6 +4,8 @@ import 'package:app/api/user.pb.dart';
 import 'package:app/util/backend_fetcher.dart';
 import 'package:app/util/prefs.dart';
 import 'package:app/widgets/app_bar.dart';
+import 'package:app/widgets/back_handler.dart';
+import 'package:app/widgets/loading_widget.dart';
 import 'package:app/widgets/login_widget.dart';
 import 'package:app/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ class _MainState extends State<HomeWidget> {
   BackendFetcher _backendFetcher;
   SharedPreferences _sharedPreferences;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  BackHandler _backHandler;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class _MainState extends State<HomeWidget> {
               getProtoPreference(_sharedPreferences, Prefs.user, new User());
         });
       });
-      return _loadingWidget();
+      return loadingWidget(context);
     }
 
     Widget widget;
@@ -53,12 +56,14 @@ class _MainState extends State<HomeWidget> {
     switch (_activeFlow) {
       case _ActiveFlow.HOME:
         widget = _makeScaffold(_mainPageWidget(), menuItems, title);
+        _backHandler = null;
         break;
       case _ActiveFlow.LOGIN:
         widget = new LoginWidget(
           onLoginComplete: _onLoginComplete,
           sharedPreferences: _sharedPreferences,
         );
+        _backHandler = null;
         break;
       case _ActiveFlow.SETTINGS:
         SettingsWidget settingsWidget = new SettingsWidget(
@@ -67,6 +72,7 @@ class _MainState extends State<HomeWidget> {
           logOut: _logOut,
           showSnackBar: _showSnackBar,
         );
+        _backHandler = null;
         title = settingsWidget.title();
         widget = _makeScaffold(settingsWidget, menuItems, title);
         break;
@@ -75,6 +81,9 @@ class _MainState extends State<HomeWidget> {
     return new WillPopScope(
       child: widget,
       onWillPop: () {
+        if (_backHandler.onBack()) {
+          return;
+        }
         if (_activeFlow == _ActiveFlow.HOME) {
           exit(0);
         } else {
@@ -125,18 +134,6 @@ class _MainState extends State<HomeWidget> {
           });
         }));
     return items;
-  }
-
-  Widget _loadingWidget() {
-    return new Scaffold(
-      key: _scaffoldKey,
-      appBar: buildAppBar(context, _defaultMenuItems(), "Cube Conductor"),
-      body: new Center(
-        child: new Text(
-          'Loading...',
-        ),
-      ),
-    );
   }
 
   void _onLoginComplete(List<String> cookie) {
