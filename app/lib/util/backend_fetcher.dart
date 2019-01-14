@@ -36,6 +36,5 @@ class BackendFetcher {
     return message;
   }
 
-  List<String> _cookie;
   SharedPreferences _sharedPreferences;
 }
