@@ -1,24 +1,21 @@
+import 'package:app/api/shared_api.dart';
 import 'package:app/util/prefs.dart';
-import 'package:app/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @immutable
 class SettingsWidget extends StatelessWidget {
-  SettingsWidget(
-      {@required this.defaultMenuItems,
-      @required this.sharedPreferences,
-      @required this.logOut,
-      @required this.showSnackBar,
-      Key key})
+  SettingsWidget(this._sharedApi, {Key key})
       : _formKey = new GlobalKey(),
         super(key: key);
+
+  final SharedApi _sharedApi;
+  final GlobalKey<FormState> _formKey;
 
   void submit(BuildContext context) {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      showSnackBar(new Text("Settings updated!"));
+      _sharedApi.showSnackBar(new Text("Settings updated!"));
     }
   }
 
@@ -34,16 +31,15 @@ class SettingsWidget extends StatelessWidget {
                 decoration: const InputDecoration(
                   labelText: "Server URL",
                 ),
-                initialValue: getPreference(sharedPreferences, Prefs.serverUrl),
+                initialValue: _sharedApi.prefs().getPreference(Prefs.serverUrl),
                 onSaved: (String value) {
                   String oldValue =
-                      getPreference(sharedPreferences, Prefs.serverUrl);
+                      _sharedApi.prefs().getPreference(Prefs.serverUrl);
                   if (oldValue == value) {
                     return;
                   }
-                  setStringPreference(
-                      sharedPreferences, Prefs.serverUrl, value);
-                  logOut(context);
+                  _sharedApi.prefs().setStringPreference(Prefs.serverUrl, value);
+                  _sharedApi.logOut(context);
                 },
               ),
               new RaisedButton(
@@ -62,10 +58,4 @@ class SettingsWidget extends StatelessWidget {
   String title() {
     return "Settings";
   }
-
-  final List<MenuItem> defaultMenuItems;
-  final SharedPreferences sharedPreferences;
-  final GlobalKey<FormState> _formKey;
-  final Function logOut;
-  final Function showSnackBar;
 }

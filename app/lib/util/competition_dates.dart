@@ -1,4 +1,4 @@
-import 'package:app/api/wcif/competition.pb.dart';
+import 'package:app/proto/wcif/competition.pb.dart';
 
 DateTime startDate(Competition competition) {
   return DateTime.parse(competition.schedule.startDate);

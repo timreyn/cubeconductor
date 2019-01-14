@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:app/api/user.pb.dart';
+import 'package:app/api/shared_api.dart';
+import 'package:app/proto/user.pb.dart';
 import 'package:app/util/backend_fetcher.dart';
 import 'package:app/util/prefs.dart';
 import 'package:app/widgets/app_bar.dart';
-import 'package:app/widgets/back_handler.dart';
 import 'package:app/widgets/loading_widget.dart';
+import 'package:app/widgets/logged_in_widget.dart';
 import 'package:app/widgets/login_widget.dart';
 import 'package:app/widgets/settings_widget.dart';
 import 'package:flutter/material.dart';
@@ -25,54 +26,51 @@ enum _ActiveFlow {
   SETTINGS,
 }
 
-class _MainState extends State<HomeWidget> {
+class _MainState extends State<HomeWidget> implements SharedApi {
   _MainState();
 
   User _user;
   _ActiveFlow _activeFlow = _ActiveFlow.HOME;
   BackendFetcher _backendFetcher;
-  SharedPreferences _sharedPreferences;
+  Prefs _prefs;
+  Function() _onBack;
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  BackHandler _backHandler;
 
   @override
   Widget build(BuildContext context) {
-    if (_sharedPreferences == null) {
-      SharedPreferences.getInstance().then((SharedPreferences prefs) {
-        setState(() {
-          _sharedPreferences = prefs;
-          _backendFetcher = new BackendFetcher(_sharedPreferences);
-          _user =
-              getProtoPreference(_sharedPreferences, Prefs.user, new User());
-        });
-      });
-      return loadingWidget(context);
-    }
+    _onBack = null;
 
-    Widget widget;
     String title = "Cube Conductor";
     List<MenuItem> menuItems = _defaultMenuItems();
 
+    if (_prefs == null) {
+      SharedPreferences.getInstance().then((SharedPreferences prefs) {
+        setState(() {
+          _prefs = new Prefs(prefs);
+          _backendFetcher = new BackendFetcher(_prefs);
+          _user = _prefs.getProtoPreference(Prefs.user, new User());
+        });
+      });
+      return _makeScaffold(loadingWidget(context), menuItems, title);
+    }
+
+    Widget widget;
+
     switch (_activeFlow) {
       case _ActiveFlow.HOME:
-        widget = _makeScaffold(_mainPageWidget(), menuItems, title);
-        _backHandler = null;
+        if (_user == null) {
+          widget = _makeScaffold(_mainPageWidget(), menuItems, title);
+        } else {
+          LoggedInWidget loggedInWidget = new LoggedInWidget(this, _user);
+          widget = _makeScaffold(loggedInWidget, menuItems, title);
+        }
         break;
       case _ActiveFlow.LOGIN:
-        widget = new LoginWidget(
-          onLoginComplete: _onLoginComplete,
-          sharedPreferences: _sharedPreferences,
-        );
-        _backHandler = null;
+        widget = new LoginWidget(this);
         break;
       case _ActiveFlow.SETTINGS:
-        SettingsWidget settingsWidget = new SettingsWidget(
-          defaultMenuItems: _defaultMenuItems(),
-          sharedPreferences: _sharedPreferences,
-          logOut: _logOut,
-          showSnackBar: _showSnackBar,
-        );
-        _backHandler = null;
+        SettingsWidget settingsWidget = new SettingsWidget(this);
         title = settingsWidget.title();
         widget = _makeScaffold(settingsWidget, menuItems, title);
         break;
@@ -81,10 +79,9 @@ class _MainState extends State<HomeWidget> {
     return new WillPopScope(
       child: widget,
       onWillPop: () {
-        if (_backHandler.onBack()) {
-          return;
-        }
-        if (_activeFlow == _ActiveFlow.HOME) {
+        if (_onBack != null) {
+          _onBack();
+        } else if (_activeFlow == _ActiveFlow.HOME) {
           exit(0);
         } else {
           setState(() {
@@ -124,7 +121,7 @@ class _MainState extends State<HomeWidget> {
             });
           }));
     } else {
-      items.add(new MenuItem(text: "Log out, " + _user.name, onClick: () => _logOut(context)));
+      items.add(new MenuItem(text: "Log out, " + _user.name, onClick: () => logOut(context)));
     }
     items.add(new MenuItem(
         text: "Settings",
@@ -136,7 +133,25 @@ class _MainState extends State<HomeWidget> {
     return items;
   }
 
-  void _onLoginComplete(List<String> cookie) {
+  // SharedApi implementation.
+  @override
+  BackendFetcher backendFetcher() {
+    return _backendFetcher;
+  }
+
+  @override
+  Prefs prefs() {
+    return _prefs;
+  }
+
+  @override
+  void onBack(Function() onBack) {
+    this._onBack = onBack;
+  }
+
+
+  @override
+  void onLoginComplete(List<String> cookie) {
     // TODO: make this show a SnackBar.
     // _showSnackBar(new Text("Logged in!"));
     _backendFetcher.setCookie(cookie);
@@ -145,22 +160,24 @@ class _MainState extends State<HomeWidget> {
       setState(() {
         _user = user;
         _activeFlow = _ActiveFlow.HOME;
-        setProtoPreference(_sharedPreferences, Prefs.user, user);
+        _prefs.setProtoPreference(Prefs.user, user);
       });
     });
   }
 
-  void _logOut(BuildContext context) {
-    _showSnackBar(new Text("Logged out!"));
+  @override
+  void logOut(BuildContext context) {
+    showSnackBar(new Text("Logged out!"));
     setState(() {
       _user = null;
-      removePreference(_sharedPreferences, Prefs.user);
-      removePreference(_sharedPreferences, Prefs.cookie);
+      _prefs.removePreference(Prefs.user);
+      _prefs.removePreference(Prefs.cookie);
       _activeFlow = _ActiveFlow.HOME;
     });
   }
 
-  void _showSnackBar(Widget content) {
+  @override
+  void showSnackBar(Widget content) {
     if (_scaffoldKey.currentState != null) {
       _scaffoldKey.currentState.showSnackBar(new SnackBar(content: content));
     }

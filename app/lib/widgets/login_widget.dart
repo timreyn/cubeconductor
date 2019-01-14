@@ -1,19 +1,16 @@
+import 'package:app/api/shared_api.dart';
 import 'package:app/util/prefs.dart';
 import 'package:app/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginWidget extends StatelessWidget {
-  LoginWidget(
-      {Key key,
-      @required this.onLoginComplete,
-      @required this.sharedPreferences})
+  LoginWidget(this._sharedApi, {Key key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String host = getPreference(sharedPreferences, Prefs.serverUrl);
+    String host = _sharedApi.prefs().getPreference(Prefs.serverUrl);
     String url = new Uri(
       scheme: 'https',
       host: host,
@@ -41,13 +38,12 @@ class LoginWidget extends StatelessWidget {
           .replaceAll("\"", "")
           .replaceAll("\\\\", "\\");
 
-      onLoginComplete(cookie.split(";"));
+      _sharedApi.onLoginComplete(cookie.split(";"));
       webviewPlugin.cleanCookies();
     });
 
     return webview;
   }
 
-  final ValueChanged<List<String>> onLoginComplete;
-  final SharedPreferences sharedPreferences;
+  final SharedApi _sharedApi;
 }
