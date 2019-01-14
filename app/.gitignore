@@ -9,4 +9,4 @@ ios/.generated/
 packages
 pubspec.lock
 .flutter-plugins
-lib/api
+lib/proto
