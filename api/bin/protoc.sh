@@ -6,9 +6,9 @@
 WATCH=0
 
 rm -r server/src/api
-rm -r app/lib/api
+rm -r app/lib/proto
 mkdir -p server/src/api/wcif
-mkdir -p app/lib/api
+mkdir -p app/lib/proto
 echo """
 import sys
 import os
@@ -21,7 +21,7 @@ run_protoc() {
   protoc \
     --proto_path=api \
     --python_out=server/src/api \
-    --dart_out=app/lib/api \
+    --dart_out=app/lib/proto \
     --plugin=third_party/protobuf/protoc_plugin/bin/protoc-gen-dart \
     api/*.proto api/wcif/*.proto
 }
